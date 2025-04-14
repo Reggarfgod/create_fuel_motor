@@ -1,4 +1,4 @@
-package com.reggarf.mods.create_hard_mod;
+package com.reggarf.mods.create_hard_mod.config;
 
 
 

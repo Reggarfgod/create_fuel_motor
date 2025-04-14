@@ -1,8 +1,0 @@
-{
-  "type": "create_hard_mod:coal_motor_fuel",
-  "input": {
-    "item": "minecraft:coal"
-  },
-  "burnTime": 1600,
-  "stress": 10000
-}

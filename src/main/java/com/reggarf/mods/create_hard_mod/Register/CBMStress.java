@@ -1,7 +1,8 @@
-package com.reggarf.mods.create_hard_mod;
+package com.reggarf.mods.create_hard_mod.Register;
 
 
 
+import com.reggarf.mods.create_hard_mod.Create_hard_mod;
 import com.simibubi.create.Create;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;

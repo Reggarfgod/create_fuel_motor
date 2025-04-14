@@ -3,7 +3,13 @@ package com.reggarf.mods.create_hard_mod;
 
 
 
-import com.reggarf.mods.create_hard_mod.recipes.RecipeRegistration;
+import com.reggarf.mods.create_hard_mod.Register.CBMBlockEntityTypes;
+import com.reggarf.mods.create_hard_mod.Register.CBMBlocks;
+import com.reggarf.mods.create_hard_mod.Register.CBMClientIniter;
+import com.reggarf.mods.create_hard_mod.Register.CBMItems;
+import com.reggarf.mods.create_hard_mod.config.CommonConfigs;
+import com.reggarf.mods.create_hard_mod.recipe.ModRecipes;
+
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -58,7 +64,7 @@ public class Create_hard_mod {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CBMClientIniter::onInitializeClient);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfigs.COMMON_CONFIG);
         // Register the recipe type and serializer
-        RecipeRegistration.register();
+        ModRecipes.register(modEventBus);
 
     }
     public static ResourceLocation asResource(String path) {

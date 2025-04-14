@@ -1,6 +1,7 @@
-package com.reggarf.mods.create_hard_mod;
+package com.reggarf.mods.create_hard_mod.Register;
 
 
+import com.reggarf.mods.create_hard_mod.Create_hard_mod;
 import com.reggarf.mods.create_hard_mod.motor.CoalMotorBlock;
 import com.reggarf.mods.create_hard_mod.motor.CoalMotorGenerator;
 import com.simibubi.create.AllTags;

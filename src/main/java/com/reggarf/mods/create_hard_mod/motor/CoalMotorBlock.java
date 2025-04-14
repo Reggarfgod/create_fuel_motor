@@ -2,7 +2,7 @@ package com.reggarf.mods.create_hard_mod.motor;
 
 
 
-import com.reggarf.mods.create_hard_mod.CBMBlockEntityTypes;
+import com.reggarf.mods.create_hard_mod.Register.CBMBlockEntityTypes;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
