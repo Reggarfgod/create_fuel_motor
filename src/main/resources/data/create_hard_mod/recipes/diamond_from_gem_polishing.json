@@ -1,0 +1,12 @@
+{
+  "type": "create_hard_mod:gem_polishing",
+  "ingredients": [
+    { "item": "minecraft:diamond" },
+    { "item": "minecraft:emerald" },
+    { "item": "minecraft:amethyst_shard" }
+  ],
+  "output": {
+    "item": "minecraft:nether_star",
+    "count": 1
+  }
+}

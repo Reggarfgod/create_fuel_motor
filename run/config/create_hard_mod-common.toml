@@ -1,0 +1,9 @@
+
+["Coal Motor Settings"]
+	#The speed the Coal Motor generates when burning fuel
+	#Range: -256 ~ 256
+	coalMotorSpeed = 16
+	#The amount of stress units the Coal Motor can generate
+	#Range: 0 ~ 60024
+	coalMotorStress = 35000
+
