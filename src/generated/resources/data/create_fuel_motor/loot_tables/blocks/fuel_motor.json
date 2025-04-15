@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "create_hard_mod:creative_motor"
+          "name": "create_fuel_motor:fuel_motor"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "create_hard_mod:blocks/creative_motor"
+  "random_sequence": "create_fuel_motor:blocks/fuel_motor"
 }

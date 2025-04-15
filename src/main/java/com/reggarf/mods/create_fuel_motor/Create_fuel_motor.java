@@ -6,7 +6,11 @@ import com.reggarf.mods.create_fuel_motor.Register.CFMBlocks;
 import com.reggarf.mods.create_fuel_motor.Register.CFMItems;
 import com.reggarf.mods.create_fuel_motor.Register.CFMRecipes;
 
+import com.reggarf.mods.create_fuel_motor.armpoint.FuelMotorArmInteractionPointType;
+import com.reggarf.mods.create_fuel_motor.config.Config;
+import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -14,8 +18,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -57,12 +65,20 @@ public class Create_fuel_motor {
         CFMItems.load();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CFMClientIniter::onInitializeClient);
         CFMRecipes.register(modEventBus);
-
+        modEventBus.addListener(this::onCommonSetup);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
+        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("create_fuel_motor_common.toml"));
     }
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
-    public static void init() {
-
+    private void onCommonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            Registry.register(
+                    CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE,
+                    new ResourceLocation(MOD_ID, "fuel_motor"),
+                    new FuelMotorArmInteractionPointType()
+            );
+        });
     }
 }

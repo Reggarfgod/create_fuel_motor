@@ -3,6 +3,6 @@
   "ingredient": {
     "item": "minecraft:coal"
   },
-  "burn_time": 1000,
-  "stress": 800.0
+  "burn_time": 2600,
+  "stress": 2350.0
 }
