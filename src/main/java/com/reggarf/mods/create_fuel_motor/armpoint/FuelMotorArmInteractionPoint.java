@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Optional;
 
 public class FuelMotorArmInteractionPoint extends AllArmInteractionPointTypes.DepositOnlyArmInteractionPoint {
-
+//TODO: arm feeding
     public FuelMotorArmInteractionPoint(ArmInteractionPointType type, Level level, BlockPos pos, BlockState state) {
         super(type, level, pos, state);
     }
