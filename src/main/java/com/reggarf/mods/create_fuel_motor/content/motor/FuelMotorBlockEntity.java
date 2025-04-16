@@ -42,11 +42,8 @@ import net.minecraftforge.items.ItemStackHandler;
 public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 	private ItemStack fuel = ItemStack.EMPTY;
 	public static final int DEFAULT_SPEED = 32;
-	public static final int MAX_SPEED = 256;
 	private MotorFuelRecipe activeFuelRecipe = null;
-
 	protected ScrollValueBehaviour generatedSpeed;
-
 	private int burnTime;
 	private int maxBurnTime;
 
@@ -182,16 +179,28 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		}
 	}
 
-	@Override
-	public float calculateAddedStressCapacity() {
-		float capacity = 0f;
-		if (activeFuelRecipe != null && burnTime > 0) {
-			capacity = activeFuelRecipe.getStressGenerated() / 256f;
-		}
-		this.lastCapacityProvided = capacity;
-		return capacity;
-	}
+//	@Override
+//	public float calculateAddedStressCapacity() {
+//		float capacity = 0f;
+//		if (activeFuelRecipe != null && burnTime > 0) {
+//			capacity = activeFuelRecipe.getStressGenerated() / 256f;
+//		}
+//		this.lastCapacityProvided = capacity;
+//		return capacity;
+//	}
+@Override
+public float calculateAddedStressCapacity() {
+	if (activeFuelRecipe == null || getGeneratedSpeed() == 0)
+		return 0f;
 
+	float speed = Math.abs(getGeneratedSpeed());
+	float desiredStress = activeFuelRecipe.getStressGenerated();
+	float Stress = desiredStress / speed;
+	     // Stress = Math.min(Stress, desiredStress);
+
+	this.lastStressApplied = Stress;
+	return Stress;
+}
 	@Override
 	public void write(CompoundTag tag, boolean clientPacket) {
 		super.write(tag, clientPacket);

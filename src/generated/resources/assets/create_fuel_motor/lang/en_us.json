@@ -12,5 +12,6 @@
   "create.tooltip.create_fuel_motor.burns": "Burn rate",
   "create.tooltip.create_fuel_motor.max_speed": "Maximum Speed",
   "create.tooltip.create_fuel_motor.rpm": "%s RPM",
-  "create.tooltip.create_fuel_motor.generates":  "Generates"
+  "create.tooltip.create_fuel_motor.generates":  "Generates",
+  "create.tooltip.create_fuel_motor.remaining_stress": "Remaining Stress: %s"
 }
