@@ -1,7 +1,8 @@
 {
-  "create_fuel_motor_tab": "Create: Fuel Motor",
-  "block.create_fuel_motor.fuel_motor": "Fuel Motor",
+  "item_group.create_fuel_motor.tab": "Create: Fuel Motor",
 
+
+  "block.create_fuel_motor.fuel_motor": "Fuel Motor",
   "create.tooltip.create_fuel_motor.fuel_info": "Fuel Motor is running:",
   "create.tooltip.create_fuel_motor.fuel_status_burn": "Burn Time:",
   "create.tooltip.create_fuel_motor.burn_time":"%ss / %ss",
@@ -9,7 +10,7 @@
   "create.tooltip.create_fuel_motor.fuel_status": "%s",
   "create.tooltip.create_fuel_motor.fuel_name_header": "Fuel Type:",
   "create.tooltip.create_fuel_motor.fuel_name": "%s",
-  "create.tooltip.create_fuel_motor.no_fuel": "No fuel is currently burning",
+  "create.tooltip.create_fuel_motor.no_fuel": "Searching for fuel",
   "create.tooltip.create_fuel_motor.generates": "Generates Stress using fuel",
   "create.tooltip.create_fuel_motor.generates_fuel": "Supports all furnace-compatible fuel items",
   "create.tooltip.create_fuel_motor.burns": "Burns fuel over time",

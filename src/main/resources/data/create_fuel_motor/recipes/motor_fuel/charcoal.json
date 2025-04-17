@@ -3,6 +3,6 @@
         "ingredient": {
             "item": "minecraft:charcoal"
         },
-        "burn_time": 2600,
+        "burn_time": 1600,
         "stress": 2350
     }

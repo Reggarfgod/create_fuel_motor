@@ -137,7 +137,7 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 
 	private boolean tryPickupFuel() {
 		BlockPos pos = getBlockPos();
-		AABB searchArea = new AABB(pos).inflate(1.5); // 3x3 area
+		AABB searchArea = new AABB(pos).inflate(CommonConfig.fuel_motor_pickup_range.get()); // 3x3 area
 
 		List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, searchArea);
 		for (ItemEntity itemEntity : items) {
@@ -233,8 +233,8 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 					.style(ChatFormatting.WHITE)
 					.forGoggles(tooltip);
 
-			CreateLang.translate("tooltip.create_fuel_motor.fuel_status", "No Fuel")
-					.style(ChatFormatting.AQUA)
+			CreateLang.translate("tooltip.create_fuel_motor.fuel_status", "No fuel detected")
+					.style(ChatFormatting.RED)
 					.forGoggles(tooltip); // Show "No Fuel" if no fuel is present
 		}
 

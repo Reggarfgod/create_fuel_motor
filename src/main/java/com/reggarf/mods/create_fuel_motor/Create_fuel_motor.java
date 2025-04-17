@@ -5,10 +5,7 @@ import com.reggarf.mods.create_fuel_motor.Register.CFMBlockEntityTypes;
 import com.reggarf.mods.create_fuel_motor.Register.CFMBlocks;
 import com.reggarf.mods.create_fuel_motor.Register.CFMItems;
 import com.reggarf.mods.create_fuel_motor.Register.CFMRecipes;
-
-
 import com.reggarf.mods.create_fuel_motor.config.CFMConfig;
-import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -17,21 +14,22 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import static com.mojang.text2speech.Narrator.LOGGER;
+import java.util.List;
 
 @Mod(Create_fuel_motor.MOD_ID)
 public class Create_fuel_motor {
 
     public static final String MOD_ID = "create_fuel_motor";
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final CreateRegistrate BASE_REGISTRATE = CreateRegistrate.create(MOD_ID);
 
     private static DeferredRegister<CreativeModeTab> TAB_REGISTRAR = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
@@ -49,7 +47,6 @@ public class Create_fuel_motor {
             new ResourceLocation(MOD_ID, "create_fuel_motor_tab"));
 
 
-
     public Create_fuel_motor() {
         var modBus = FMLJavaModLoadingContext.get().getModEventBus();
         LOGGER.info("Hello 1.20.1 Create!");
@@ -65,9 +62,10 @@ public class Create_fuel_motor {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CFMClientIniter::onInitializeClient);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::generalSetup);
         CFMRecipes.register(modEventBus);
-        //modEventBus.addListener(this::onCommonSetup);
         CFMConfig.getCommon();
+
     }
+
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
@@ -80,7 +78,8 @@ public class Create_fuel_motor {
 //            );
 //        });
 //    }
-private void generalSetup(final FMLCommonSetupEvent event) {
 
-}
+    private void generalSetup(final FMLCommonSetupEvent event) {
+
+    }
 }

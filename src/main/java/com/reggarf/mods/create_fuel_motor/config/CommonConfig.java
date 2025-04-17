@@ -1,11 +1,7 @@
 package com.reggarf.mods.create_fuel_motor.config;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
-
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @Mod.EventBusSubscriber
 public class CommonConfig {
@@ -14,7 +10,7 @@ public class CommonConfig {
 	public static final String catagory_fuel_motor = "fuel_motor";
 	public static ForgeConfigSpec.IntValue fuel_motor_rpm_range;
 	public static ForgeConfigSpec.BooleanValue audio_Enabled;
-
+	public static ForgeConfigSpec.DoubleValue fuel_motor_pickup_range;
 
 
 
@@ -30,6 +26,10 @@ public class CommonConfig {
 			builder.comment("Fuel Motor").push(catagory_fuel_motor);
 			fuel_motor_rpm_range = builder.comment("Fuel Motor min/max RPM.")
 					.defineInRange("motor_rpm_range", 256, 1, Integer.MAX_VALUE);
+
+			fuel_motor_pickup_range = builder.comment("Pickup range (in blocks) for fuel items around the motor.")
+					.defineInRange("fuel_pickup_range", 3, 0.0, 16.0);
+
 			builder.pop();
 		}
 }
