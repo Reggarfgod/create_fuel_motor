@@ -4,7 +4,7 @@ package com.reggarf.mods.create_fuel_motor.content.motor;
 
 
 import com.reggarf.mods.create_fuel_motor.Register.CFMBlockEntityTypes;
-import com.reggarf.mods.create_fuel_motor.config.Config;
+import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import com.reggarf.mods.create_fuel_motor.util.StringFormattingTool;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
@@ -15,15 +15,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -103,7 +100,7 @@ public class FuelMotorBlock extends DirectionalKineticBlock implements IBE<FuelM
 			tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.max_speed").style(ChatFormatting.WHITE)
 					.component());
 			tooltip.add(CreateLang.text(" ").translate("tooltip.create_fuel_motor.rpm",
-					StringFormattingTool.formatLong(Config.FUEL_MOTOR_RPM_RANGE.get())).style(ChatFormatting.GRAY).component());
+					StringFormattingTool.formatLong(CommonConfig.fuel_motor_rpm_range.get())).style(ChatFormatting.GRAY).component());
 
 	}
 	@Override

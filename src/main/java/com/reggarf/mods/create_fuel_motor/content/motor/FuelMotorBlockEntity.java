@@ -2,22 +2,17 @@ package com.reggarf.mods.create_fuel_motor.content.motor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.reggarf.mods.create_fuel_motor.Register.CFMBlocks;
-import com.reggarf.mods.create_fuel_motor.config.Config;
+import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import com.reggarf.mods.create_fuel_motor.recipe.MotorFuelRecipe;
-import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
-import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlock;
 import com.simibubi.create.content.kinetics.motor.KineticScrollValueBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.CenteredSideValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
-import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 
 import dev.engine_room.flywheel.lib.transform.TransformStack;
-import net.createmod.catnip.lang.LangBuilder;
 import net.createmod.catnip.math.AngleHelper;
 import net.createmod.catnip.math.VecHelper;
 
@@ -28,18 +23,15 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
@@ -64,7 +56,7 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		super.addBehaviours(behaviours);
 		generatedSpeed = new KineticScrollValueBehaviour(CreateLang.translateDirect("kinetics.creative_motor.rotation_speed"),
 				this, new MotorValueBox());
-		generatedSpeed.between(-Config.FUEL_MOTOR_RPM_RANGE.get(), Config.FUEL_MOTOR_RPM_RANGE.get());
+		generatedSpeed.between(-CommonConfig.fuel_motor_rpm_range.get(), CommonConfig.fuel_motor_rpm_range.get());
 		generatedSpeed.value = 32;
 		generatedSpeed.withCallback(i -> this.updateGeneratedRotation());
 		behaviours.add(generatedSpeed);

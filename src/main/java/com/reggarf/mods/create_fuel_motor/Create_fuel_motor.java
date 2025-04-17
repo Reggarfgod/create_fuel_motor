@@ -7,10 +7,9 @@ import com.reggarf.mods.create_fuel_motor.Register.CFMItems;
 import com.reggarf.mods.create_fuel_motor.Register.CFMRecipes;
 
 
-import com.reggarf.mods.create_fuel_motor.config.Config;
-import com.simibubi.create.api.registry.CreateBuiltInRegistries;
+import com.reggarf.mods.create_fuel_motor.config.CFMConfig;
+import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -64,10 +63,10 @@ public class Create_fuel_motor {
         CFMBlockEntityTypes.load();
         CFMItems.load();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CFMClientIniter::onInitializeClient);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::generalSetup);
         CFMRecipes.register(modEventBus);
         //modEventBus.addListener(this::onCommonSetup);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
-        Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("create_fuel_motor_common.toml"));
+        CFMConfig.getCommon();
     }
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
@@ -81,4 +80,7 @@ public class Create_fuel_motor {
 //            );
 //        });
 //    }
+private void generalSetup(final FMLCommonSetupEvent event) {
+
+}
 }
