@@ -4,5 +4,5 @@
     "item": "create:blaze_cake"
   },
   "burn_time": 5600,
-  "stress": 35000.0
+  "stress": 32768
 }

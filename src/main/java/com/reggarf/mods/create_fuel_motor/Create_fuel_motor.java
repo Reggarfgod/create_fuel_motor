@@ -6,7 +6,7 @@ import com.reggarf.mods.create_fuel_motor.Register.CFMBlocks;
 import com.reggarf.mods.create_fuel_motor.Register.CFMItems;
 import com.reggarf.mods.create_fuel_motor.Register.CFMRecipes;
 
-import com.reggarf.mods.create_fuel_motor.armpoint.FuelMotorArmInteractionPointType;
+
 import com.reggarf.mods.create_fuel_motor.config.Config;
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -65,20 +65,20 @@ public class Create_fuel_motor {
         CFMItems.load();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CFMClientIniter::onInitializeClient);
         CFMRecipes.register(modEventBus);
-        modEventBus.addListener(this::onCommonSetup);
+        //modEventBus.addListener(this::onCommonSetup);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
         Config.loadConfig(Config.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("create_fuel_motor_common.toml"));
     }
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
     }
-    private void onCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            Registry.register(
-                    CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE,
-                    new ResourceLocation(MOD_ID, "fuel_motor"),
-                    new FuelMotorArmInteractionPointType()
-            );
-        });
-    }
+//    private void onCommonSetup(FMLCommonSetupEvent event) {
+//        event.enqueueWork(() -> {
+//            Registry.register(
+//                    CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE,
+//                    new ResourceLocation(MOD_ID, "fuel_motor"),
+//                    new FuelMotorArmInteractionPointType()
+//            );
+//        });
+//    }
 }

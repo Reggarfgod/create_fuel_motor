@@ -15,11 +15,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -71,6 +75,13 @@ public class FuelMotorBlock extends DirectionalKineticBlock implements IBE<FuelM
 	public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {
 		return false;
 	}
+	@Override
+	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+		super.onPlace(state, level, pos, oldState, isMoving);
+		level.scheduleTick(pos, this, 1);
+	}
+
+
 
 	@Override
 	public Class<FuelMotorBlockEntity> getBlockEntityClass() {
@@ -82,7 +93,7 @@ public class FuelMotorBlock extends DirectionalKineticBlock implements IBE<FuelM
 
 			tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.generates").style(ChatFormatting.WHITE)
 					.component());
-		    tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.generates_fuel").style(ChatFormatting.AQUA)
+		    tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.generates_fuel").style(ChatFormatting.GRAY)
 				.component());
 			tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.burns").style(ChatFormatting.WHITE)
 					.component());
@@ -92,7 +103,7 @@ public class FuelMotorBlock extends DirectionalKineticBlock implements IBE<FuelM
 			tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.max_speed").style(ChatFormatting.WHITE)
 					.component());
 			tooltip.add(CreateLang.text(" ").translate("tooltip.create_fuel_motor.rpm",
-					StringFormattingTool.formatLong(Config.FUEL_MOTOR_RPM_RANGE.get())).style(ChatFormatting.AQUA).component());
+					StringFormattingTool.formatLong(Config.FUEL_MOTOR_RPM_RANGE.get())).style(ChatFormatting.GRAY).component());
 
 	}
 	@Override

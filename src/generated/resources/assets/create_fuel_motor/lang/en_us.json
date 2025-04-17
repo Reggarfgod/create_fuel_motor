@@ -1,17 +1,21 @@
 {
   "create_fuel_motor_tab": "Create: Fuel Motor",
   "block.create_fuel_motor.fuel_motor": "Fuel Motor",
-  "create.tooltip.create_fuel_motor.fuel_info": "Fuel Info",
-  "create.tooltip.create_fuel_motor.fuel_item": "Fuel: %s",
-  "create.tooltip.create_fuel_motor.burn_time": "Burn Time: %ss / %ss",
-  "create.tooltip.create_fuel_motor.stress_generated": "Stress Generated: %s SU",
-  "create.tooltip.create_fuel_motor.no_fuel": "No fuel loaded",
-  "create.tooltip.create_fuel_motor.remaining_stress_capacity": "Remaining Stress Capacity: %s",
- "create.tooltip.create_fuel_motor.generates_fuel": "SU depends on the fuel",
- "create.tooltip.create_fuel_motor.fuel_burn_time": "Burn rate depend on the fuel",
-  "create.tooltip.create_fuel_motor.burns": "Burn rate",
-  "create.tooltip.create_fuel_motor.max_speed": "Maximum Speed",
-  "create.tooltip.create_fuel_motor.rpm": "%s RPM",
-  "create.tooltip.create_fuel_motor.generates":  "Generates",
-  "create.tooltip.create_fuel_motor.remaining_stress": "Remaining Stress: %s"
+
+  "create.tooltip.create_fuel_motor.fuel_info": "Fuel Motor is running:",
+  "create.tooltip.create_fuel_motor.fuel_status_burn": "Burn Time:",
+  "create.tooltip.create_fuel_motor.burn_time":"%ss / %ss",
+  "create.tooltip.create_fuel_motor.fuel_status_header": "Fuel Status:",
+  "create.tooltip.create_fuel_motor.fuel_status": "%s",
+  "create.tooltip.create_fuel_motor.fuel_name_header": "Fuel Type:",
+  "create.tooltip.create_fuel_motor.fuel_name": "%s",
+  "create.tooltip.create_fuel_motor.no_fuel": "No fuel is currently burning",
+  "create.tooltip.create_fuel_motor.generates": "Generates Stress using fuel",
+  "create.tooltip.create_fuel_motor.generates_fuel": "Supports all furnace-compatible fuel items",
+  "create.tooltip.create_fuel_motor.burns": "Burns fuel over time",
+  "create.tooltip.create_fuel_motor.fuel_burn_time": "Fuel determines how long the motor runs",
+  "create.tooltip.create_fuel_motor.max_speed": "Max Output Speed",
+  "create.tooltip.create_fuel_motor.rpm": "%s RPM"
+
+
 }
