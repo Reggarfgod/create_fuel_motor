@@ -32,7 +32,7 @@ public class CFMBlocks {
                     .transform(CFMStress.setCapacity(16384.0))
                     .onRegister(BlockStressValues.setGeneratorSpeed(256, true))
                     .item()
-                    .properties(p -> p.rarity(Rarity.UNCOMMON))
+                    .properties(p -> p.rarity(Rarity.COMMON))
                     .transform(customItemModel())
                     .register();
 

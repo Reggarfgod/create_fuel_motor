@@ -146,8 +146,8 @@ dependencies {
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
     implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
     //implementation fg.deobf("curse.maven:create-better-motors-1162812:6419800")
-    implementation fg.deobf("curse.maven:createaddition-439890:6306951")
-    implementation fg.deobf("curse.maven:jade-324717:6271651")
+    //implementation fg.deobf("curse.maven:createaddition-439890:6306951")
+    //implementation fg.deobf("curse.maven:jade-324717:6271651")
 }
 minecraft {
     runs {

@@ -90,17 +90,17 @@ public class FuelMotorBlock extends DirectionalKineticBlock implements IBE<FuelM
 
 			tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.generates").style(ChatFormatting.WHITE)
 					.component());
-		    tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.generates_fuel").style(ChatFormatting.GRAY)
+		    tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.generates_fuel").style(ChatFormatting.DARK_GRAY)
 				.component());
 			tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.burns").style(ChatFormatting.WHITE)
 					.component());
-			tooltip.add(CreateLang.text(" ").translate("tooltip.create_fuel_motor.fuel_burn_time").style(ChatFormatting.GRAY)
+			tooltip.add(CreateLang.text(" ").translate("tooltip.create_fuel_motor.fuel_burn_time").style(ChatFormatting.DARK_GRAY)
 					.component());
 
 			tooltip.add(CreateLang.translate("tooltip.create_fuel_motor.max_speed").style(ChatFormatting.WHITE)
 					.component());
 			tooltip.add(CreateLang.text(" ").translate("tooltip.create_fuel_motor.rpm",
-					StringFormattingTool.formatLong(CommonConfig.fuel_motor_rpm_range.get())).style(ChatFormatting.GRAY).component());
+					StringFormattingTool.formatLong(CommonConfig.fuel_motor_rpm_range.get())).style(ChatFormatting.DARK_GRAY).component());
 
 	}
 	@Override
