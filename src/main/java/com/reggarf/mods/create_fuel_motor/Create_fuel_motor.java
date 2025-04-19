@@ -1,28 +1,23 @@
 package com.reggarf.mods.create_fuel_motor;
 
-
-
-import com.reggarf.mods.create_fuel_motor.registry.CFMRecipeSerializers;
-import com.reggarf.mods.create_fuel_motor.registry.CFMRecipeTypes;
-import com.reggarf.mods.create_fuel_motor.registry.CFMBlockEntityTypes;
-import com.reggarf.mods.create_fuel_motor.registry.CFMBlocks;
-import com.reggarf.mods.create_fuel_motor.registry.CFMItems;
-
 import com.reggarf.mods.create_fuel_motor.config.CFMConfig;
+import com.reggarf.mods.create_fuel_motor.registry.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,57 +28,56 @@ public class Create_fuel_motor {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final CreateRegistrate BASE_REGISTRATE = CreateRegistrate.create(MOD_ID);
 
-    private static DeferredRegister<CreativeModeTab> TAB_REGISTRAR = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
-    public static final RegistryObject<CreativeModeTab> tab = TAB_REGISTRAR.register("create_fuel_motor_tab",
+    // Creative tab
+    private static final DeferredRegister<CreativeModeTab> TAB_REGISTRAR =
+            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
+
+    public static final RegistryObject<CreativeModeTab> TAB = TAB_REGISTRAR.register("create_fuel_motor_tab",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("item_group." + MOD_ID + ".tab"))
                     .icon(CFMBlocks.FUEL_MOTOR::asStack)
-                    .build()
-    );
+                    .build());
 
-    public static final CreateRegistrate REGISTRATE = BASE_REGISTRATE.setCreativeTab(tab);
+    public static final CreateRegistrate REGISTRATE = BASE_REGISTRATE.setCreativeTab(TAB);
 
-
-    public static final ResourceKey<CreativeModeTab> CREATIVE_TAB_KEY = ResourceKey.create(Registries.CREATIVE_MODE_TAB,
-            new ResourceLocation(MOD_ID, "create_fuel_motor_tab"));
-
+    public static final ResourceKey<CreativeModeTab> CREATIVE_TAB_KEY =
+            ResourceKey.create(Registries.CREATIVE_MODE_TAB, new ResourceLocation(MOD_ID, "create_fuel_motor_tab"));
 
     public Create_fuel_motor() {
-        var modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        LOGGER.info("Hello 1.20.1 Create!");
-
-        BASE_REGISTRATE.registerEventListeners(modBus);
-        TAB_REGISTRAR.register(modBus);
-        MinecraftForge.EVENT_BUS.register(this);
-        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
+
+        LOGGER.info("Initializing Create: Fuel Motor mod.");
+
+        // Register creative tab
+        TAB_REGISTRAR.register(modEventBus);
+
+        // Register Create's registrate
+        BASE_REGISTRATE.registerEventListeners(modEventBus);
+        REGISTRATE.setCreativeTab(TAB);
+
+        // Register content
         CFMBlocks.load();
         CFMBlockEntityTypes.load();
         CFMItems.load();
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(CFMClientIniter::onInitializeClient);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::generalSetup);
-       // MotorFuelRecipeType.register(modEventBus);
-        CFMConfig.getCommon();
         CFMRecipeSerializers.register(modEventBus);
         CFMRecipeTypes.register(modEventBus);
 
+        // Load config
+        CFMConfig.getCommon();
 
+        // Register client initializer and general setup
+        modEventBus.addListener(CFMClientIniter::onInitializeClient);
+        modEventBus.addListener(this::generalSetup);
+
+        // Register Forge event handlers
+        forgeEventBus.register(CFMMHandler.class);
+    }
+
+    private void generalSetup(final FMLCommonSetupEvent event) {
     }
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
-    }
-//    private void onCommonSetup(FMLCommonSetupEvent event) {
-//        event.enqueueWork(() -> {
-//            Registry.register(
-//                    CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE,
-//                    new ResourceLocation(MOD_ID, "fuel_motor"),
-//                    new FuelMotorArmInteractionPointType()
-//            );
-//        });
-//    }
-
-    private void generalSetup(final FMLCommonSetupEvent event) {
-
     }
 }
