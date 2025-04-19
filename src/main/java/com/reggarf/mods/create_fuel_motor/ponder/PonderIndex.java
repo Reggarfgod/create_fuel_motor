@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 public class PonderIndex {
 
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
-        PonderSceneRegistrationHelper<ItemProviderEntry<?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
+        PonderSceneRegistrationHelper<ItemProviderEntry<?,?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
         //Motor
         HELPER.forComponents(CFMBlocks.FUEL_MOTOR)

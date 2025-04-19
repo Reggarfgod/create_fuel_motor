@@ -1,20 +1,21 @@
 package com.reggarf.mods.create_fuel_motor.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.ModConfigSpec;
+
+@EventBusSubscriber
 public class CommonConfig {
 
 	public static final String catagory_general = "general";
 	public static final String catagory_fuel_motor = "fuel_motor";
-	public static ForgeConfigSpec.IntValue fuel_motor_rpm_range;
-	public static ForgeConfigSpec.BooleanValue audio_Enabled;
-	public static ForgeConfigSpec.DoubleValue fuel_motor_pickup_range;
+	public static ModConfigSpec.IntValue fuel_motor_rpm_range;
+	public static ModConfigSpec.BooleanValue audio_Enabled;
+	public static ModConfigSpec.DoubleValue fuel_motor_pickup_range;
 
 
 
-		public CommonConfig(ForgeConfigSpec.Builder builder) {
+		public CommonConfig(ModConfigSpec.Builder builder) {
 			builder.comment("Make sure config changes are duplicated on both Clients and the Server when running a dedicated Server,")
 					.comment(" as the config isnt synced between Clients and Server.");
 

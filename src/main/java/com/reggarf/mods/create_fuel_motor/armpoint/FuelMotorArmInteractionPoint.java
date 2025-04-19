@@ -1,4 +1,4 @@
-//package com.reggarf.mods.create_fuel_motor.armpoint;
+package com.reggarf.mods.create_fuel_motor.armpoint;//package com.reggarf.mods.create_fuel_motor.armpoint;
 //
 //import com.simibubi.create.content.kinetics.mechanicalArm.AllArmInteractionPointTypes;
 //import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;

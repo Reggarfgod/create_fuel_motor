@@ -1,18 +1,20 @@
 package com.reggarf.mods.create_fuel_motor.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
 
-
+import net.createmod.catnip.config.ConfigBase;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CFMConfig {
     private static final CFMConfig INSTANCE = new CFMConfig();
     private final CommonConfig common;
     public CFMConfig() {
-        var common = new ForgeConfigSpec.Builder().configure(CommonConfig::new);
+        var common = new ModConfigSpec.Builder().configure(CommonConfig::new);
         this.common = common.getLeft();
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, common.getRight());
+        //ModLoadingContext.registerConfig(ModConfig.Type.COMMON, common.getRight());
     }
 
     public static CommonConfig getCommon() {

@@ -1,13 +1,10 @@
 package com.reggarf.mods.create_fuel_motor.ponder;
 
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
-import net.createmod.catnip.math.Pointing;
-import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;  // Smoke particles import
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 

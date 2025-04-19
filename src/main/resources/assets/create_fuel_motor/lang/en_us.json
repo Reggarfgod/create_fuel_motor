@@ -1,0 +1,5 @@
+{
+  "itemGroup.create_fuel_motor": "Example Mod Tab",
+  "block.create_fuel_motor.example_block": "Example Block",
+  "item.create_fuel_motor.example_item": "Example Item"
+}

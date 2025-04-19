@@ -9,7 +9,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class MotorFuelRecipeSerializer implements RecipeSerializer<MotorFuelRecipe> {
     public static final MotorFuelRecipeSerializer INSTANCE = new MotorFuelRecipeSerializer();
-    public static final ResourceLocation ID = new ResourceLocation("create_fuel_motor", "motor_fuel");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("create_fuel_motor", "motor_fuel");
 
     @Override
     public MotorFuelRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
