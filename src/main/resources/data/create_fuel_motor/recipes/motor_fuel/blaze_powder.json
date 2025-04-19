@@ -3,6 +3,6 @@
         "ingredient": {
             "item": "minecraft:blaze_powder"
         },
-        "burn_time": 1000,
-        "stress": 2350
+        "burn_time": 500,
+        "stress": 1934
     }

@@ -3,7 +3,7 @@ package com.reggarf.mods.create_fuel_motor.ponder;
 
 
 import com.reggarf.mods.create_fuel_motor.Create_fuel_motor;
-import com.reggarf.mods.create_fuel_motor.Register.CFMBlocks;
+import com.reggarf.mods.create_fuel_motor.registry.CFMBlocks;
 import com.simibubi.create.infrastructure.ponder.AllCreatePonderTags;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.createmod.catnip.platform.CatnipServices;

@@ -3,6 +3,6 @@
         "ingredient": {
             "item": "create:blaze_cake"
         },
-        "burn_time": 2600,
-        "stress": 35549
+        "burn_time": 2000,
+        "stress": 16549
     }

@@ -1,7 +1,5 @@
 package com.reggarf.mods.create_fuel_motor.recipe;
 
-
-
 import com.google.gson.JsonObject;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,6 +31,10 @@ public class MotorFuelRecipe implements Recipe<SimpleContainer> {
         return stressGenerated;
     }
 
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
     @Override
     public boolean matches(SimpleContainer container, Level level) {
         return ingredient.test(container.getItem(0));
@@ -60,49 +62,11 @@ public class MotorFuelRecipe implements Recipe<SimpleContainer> {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return Serializer.INSTANCE;
+        return MotorFuelRecipeSerializer.INSTANCE;
     }
 
     @Override
     public RecipeType<?> getType() {
-        return Type.INSTANCE;
-    }
-
-    public Ingredient getIngredient() {
-        return ingredient;
-    }
-
-    public static class Type implements RecipeType<MotorFuelRecipe> {
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "motor_fuel";
-    }
-
-    public static class Serializer implements RecipeSerializer<MotorFuelRecipe> {
-        public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID = new ResourceLocation("create_fuel_motor", "motor_fuel");
-
-        @Override
-        public MotorFuelRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            Ingredient ingredient = Ingredient.fromJson(json.get("ingredient"));
-            int burnTime = GsonHelper.getAsInt(json, "burn_time");
-            float stress = GsonHelper.getAsFloat(json, "stress");
-
-            return new MotorFuelRecipe(ingredient, burnTime, stress, recipeId);
-        }
-
-        @Override
-        public MotorFuelRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-            Ingredient ingredient = Ingredient.fromNetwork(buffer);
-            int burnTime = buffer.readInt();
-            float stress = buffer.readFloat();
-            return new MotorFuelRecipe(ingredient, burnTime, stress, recipeId);
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, MotorFuelRecipe recipe) {
-            recipe.ingredient.toNetwork(buffer);
-            buffer.writeInt(recipe.getBurnTime());
-            buffer.writeFloat(recipe.getStressGenerated());
-        }
+        return MotorFuelRecipeType.INSTANCE;
     }
 }

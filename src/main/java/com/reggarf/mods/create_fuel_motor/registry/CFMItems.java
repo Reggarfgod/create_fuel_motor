@@ -1,4 +1,4 @@
-package com.reggarf.mods.create_fuel_motor.Register;
+package com.reggarf.mods.create_fuel_motor.registry;
 
 
 

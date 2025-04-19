@@ -1,9 +1,11 @@
 package com.reggarf.mods.create_fuel_motor.content.motor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.reggarf.mods.create_fuel_motor.Register.CFMBlocks;
 import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import com.reggarf.mods.create_fuel_motor.recipe.MotorFuelRecipe;
+import com.reggarf.mods.create_fuel_motor.recipe.MotorFuelRecipeType;
+import com.reggarf.mods.create_fuel_motor.registry.CFMBlocks;
+import com.reggarf.mods.create_fuel_motor.util.StringFormattingTool;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlock;
 import com.simibubi.create.content.kinetics.motor.KineticScrollValueBehaviour;
@@ -11,11 +13,9 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
-
 import dev.engine_room.flywheel.lib.transform.TransformStack;
 import net.createmod.catnip.math.AngleHelper;
 import net.createmod.catnip.math.VecHelper;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,9 +40,27 @@ import java.util.List;
 import java.util.Optional;
 
 public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
+
 	private int burnTime = 0;
 	private int maxBurnTime = 0;
 	private float stressGenerated = 0f;
+
+	private final ItemStackHandler inventory = new ItemStackHandler(1) {
+		@Override
+		protected void onContentsChanged(int slot) {
+			setChanged();
+		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			return 1;
+		}
+	};
+	private final LazyOptional<ItemStackHandler> inventoryCapability = LazyOptional.of(() -> inventory);
+
+	public ItemStackHandler getInventory() {
+		return inventory;
+	}
 
 	private ScrollValueBehaviour generatedSpeed;
 
@@ -54,26 +72,16 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		super.addBehaviours(behaviours);
-		generatedSpeed = new KineticScrollValueBehaviour(CreateLang.translateDirect("kinetics.creative_motor.rotation_speed"),
-				this, new MotorValueBox());
+		generatedSpeed = new KineticScrollValueBehaviour(
+				CreateLang.translateDirect("kinetics.creative_motor.rotation_speed"),
+				this,
+				new MotorValueBox()
+		);
 		generatedSpeed.between(-CommonConfig.fuel_motor_rpm_range.get(), CommonConfig.fuel_motor_rpm_range.get());
 		generatedSpeed.value = 32;
 		generatedSpeed.withCallback(i -> this.updateGeneratedRotation());
 		behaviours.add(generatedSpeed);
 	}
-
-	//////////////////////////////////////inventoryCapability/////////////////////////////////////
-	private ItemStackHandler inventory = new ItemStackHandler(1) {
-		@Override
-		protected void onContentsChanged(int slot) {
-			setChanged();
-		}
-		@Override
-		public int getSlotLimit(int slot) {
-			return 1;
-		}
-	};
-	private final LazyOptional<ItemStackHandler> inventoryCapability = LazyOptional.of(() -> inventory);
 
 	@Override
 	public <T> LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> cap, Direction side) {
@@ -87,7 +95,79 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		super.invalidateCaps();
 		inventoryCapability.invalidate();
 	}
-/////////////////////////////////////////////////////////////////////////////////////////
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (level.isClientSide) return;
+
+		if (burnTime > 0) {
+			burnTime--;
+			sendData(); //Sync to client
+		} else if (!tryConsumeFuelFromInventory() && !tryPickupFuel()) {
+			updateGeneratedRotation();
+		}
+	}
+
+
+	private boolean tryConsumeFuelFromInventory() {
+		for (int i = 0; i < inventory.getSlots(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (stack.isEmpty()) continue;
+
+			Optional<MotorFuelRecipe> optionalRecipe = getFuelRecipe(stack);
+			if (optionalRecipe.isPresent()) {
+				applyFuelRecipe(optionalRecipe.get());
+				stack.shrink(1);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean tryPickupFuel() {
+		AABB area = new AABB(worldPosition).inflate(CommonConfig.fuel_motor_pickup_range.get());
+		List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, area);
+
+		for (ItemEntity itemEntity : items) {
+			ItemStack stack = itemEntity.getItem();
+			if (stack.isEmpty()) continue;
+
+			Optional<MotorFuelRecipe> optionalRecipe = getFuelRecipe(stack);
+			if (optionalRecipe.isPresent()) {
+				applyFuelRecipe(optionalRecipe.get());
+				stack.shrink(1);
+				if (stack.isEmpty()) itemEntity.discard();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Optional<MotorFuelRecipe> getFuelRecipe(ItemStack stack) {
+		return level.getRecipeManager()
+				.getAllRecipesFor(MotorFuelRecipeType.INSTANCE)
+				.stream()
+				.filter(recipe -> recipe.getIngredient().test(stack))
+				.findFirst();
+	}
+
+
+
+	private void applyFuelRecipe(MotorFuelRecipe recipe) {
+		burnTime = maxBurnTime = recipe.getBurnTime();
+		stressGenerated = recipe.getStressGenerated();
+		updateGeneratedRotation();
+		spawnFuelParticles();
+	}
+
+	private void spawnFuelParticles() {
+		if (!(level instanceof ServerLevel serverLevel)) return;
+
+		Vec3 center = Vec3.atCenterOf(getBlockPos());
+		serverLevel.sendParticles(ParticleTypes.FLAME, center.x, center.y + 0.25, center.z, 6, 0.25, 0.25, 0.25, 0.01);
+		serverLevel.sendParticles(ParticleTypes.SMOKE, center.x, center.y + 0.3, center.z, 3, 0.2, 0.2, 0.2, 0.005);
+	}
 
 	@Override
 	public float getGeneratedSpeed() {
@@ -95,123 +175,48 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
-		if (level.isClientSide()) return;
-
-		if (burnTime > 0) {
-			burnTime--;
-		} else {
-			if (!tryConsumeFuelFromInventory() && !tryPickupFuel()) {
-				updateGeneratedRotation();
-			}
+	public float calculateAddedStressCapacity() {
+		float speed = Math.abs(getGeneratedSpeed());
+		if (!isRunning() || speed == 0) {
+			lastCapacityProvided = 0;
+			return 0;
 		}
+		float capacity = stressGenerated / speed;
+		lastCapacityProvided = capacity;
+		return capacity;
 	}
 
-	private boolean tryConsumeFuelFromInventory() {
-		for (int i = 0; i < inventory.getSlots(); i++) {
-			ItemStack stack = inventory.getStackInSlot(i);
-			if (stack.isEmpty()) continue;
-
-			Optional<MotorFuelRecipe> optionalRecipe = level.getRecipeManager()
-					.getAllRecipesFor(MotorFuelRecipe.Type.INSTANCE)
-					.stream()
-					.filter(recipe -> recipe.getIngredient().test(stack))
-					.findFirst();
-
-			if (optionalRecipe.isPresent()) {
-				MotorFuelRecipe recipe = optionalRecipe.get();
-				burnTime = maxBurnTime = recipe.getBurnTime();
-				stressGenerated = recipe.getStressGenerated();
-				stack.shrink(1);
-				updateGeneratedRotation();
-
-				return true;
-			}
-			// Spawn particles
-			spawnFuelParticles();
-		}
-
-		return false;
+	private boolean isRunning() {
+		return burnTime > 0;
 	}
 
-	private boolean tryPickupFuel() {
-		BlockPos pos = getBlockPos();
-		AABB searchArea = new AABB(pos).inflate(CommonConfig.fuel_motor_pickup_range.get()); // 3x3 area
-
-		List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, searchArea);
-		for (ItemEntity itemEntity : items) {
-			ItemStack stack = itemEntity.getItem();
-			if (stack.isEmpty()) continue;
-
-			// Try to find a matching MotorFuelRecipe
-			Optional<MotorFuelRecipe> optionalRecipe = level.getRecipeManager()
-					.getAllRecipesFor(MotorFuelRecipe.Type.INSTANCE)
-					.stream()
-					.filter(recipe -> recipe.getIngredient().test(stack))
-					.findFirst();
-
-			if (optionalRecipe.isPresent()) {
-				MotorFuelRecipe recipe = optionalRecipe.get();
-
-				// Set burn and stress
-				burnTime = maxBurnTime = recipe.getBurnTime();
-				stressGenerated = recipe.getStressGenerated(); // You must define this field in your TileEntity
-				// Consume one item from the stack
-				stack.shrink(1);
-				if (stack.isEmpty()) {
-					itemEntity.discard();
-				}
-				updateGeneratedRotation();
-				// Show particles
-				spawnFuelParticles();
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private void spawnFuelParticles() {
-		if (!(level instanceof ServerLevel serverLevel)) return;
-
-		Vec3 center = Vec3.atCenterOf(getBlockPos());
-
-		serverLevel.sendParticles(ParticleTypes.FLAME,
-				center.x, center.y + 0.25, center.z,
-				6, 0.25, 0.25, 0.25, 0.01);
-
-		serverLevel.sendParticles(ParticleTypes.SMOKE,
-				center.x, center.y + 0.3, center.z,
-				3, 0.2, 0.2, 0.2, 0.005);
+	@Override
+	protected Block getStressConfigKey() {
+		return CFMBlocks.FUEL_MOTOR.get();
 	}
 
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
 		super.addToGoggleTooltip(tooltip, isPlayerSneaking);
 
-		if (burnTime > 0 && maxBurnTime > 0) {
-
+		if (isRunning()) {
 			CreateLang.translate("tooltip.create_fuel_motor.fuel_status_burn")
 					.style(ChatFormatting.GRAY)
 					.forGoggles(tooltip);
 
 			CreateLang.translate("tooltip.create_fuel_motor.burn_time",
-							burnTime / 20, maxBurnTime / 20)
+							StringFormattingTool.formatLong(burnTime / 20),
+							StringFormattingTool.formatLong(maxBurnTime / 20))
 					.style(ChatFormatting.AQUA)
 					.forGoggles(tooltip, 1);
-
 
 			CreateLang.translate("tooltip.create_fuel_motor.fuel_status_header")
 					.style(ChatFormatting.GRAY)
 					.forGoggles(tooltip);
 
-
 			CreateLang.translate("tooltip.create_fuel_motor.fuel_status", "Yes")
 					.style(ChatFormatting.AQUA)
 					.forGoggles(tooltip);
-
 
 			CreateLang.translate("tooltip.create_fuel_motor.fuel_name_header")
 					.style(ChatFormatting.GRAY)
@@ -220,50 +225,43 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 			for (int i = 0; i < inventory.getSlots(); i++) {
 				ItemStack stack = inventory.getStackInSlot(i);
 				if (!stack.isEmpty()) {
-					String fuelName = stack.getHoverName().getString(); // Get the name of the fuel item
-					CreateLang.translate("tooltip.create_fuel_motor.fuel_name", fuelName)
+					CreateLang.translate("tooltip.create_fuel_motor.fuel_name", stack.getHoverName().getString())
 							.style(ChatFormatting.AQUA)
-							.forGoggles(tooltip); // Show the name of the fuel
+							.forGoggles(tooltip);
 				}
 			}
-
 		} else {
-			// No fuel available
 			CreateLang.translate("tooltip.create_fuel_motor.no_fuel")
 					.style(ChatFormatting.WHITE)
 					.forGoggles(tooltip);
 
 			CreateLang.translate("tooltip.create_fuel_motor.fuel_status", "No fuel detected")
 					.style(ChatFormatting.RED)
-					.forGoggles(tooltip); // Show "No Fuel" if no fuel is present
+					.forGoggles(tooltip);
 		}
 
 		return true;
 	}
 
 
-
 	@Override
-	public float calculateAddedStressCapacity() {
-		float speed = Math.abs(getGeneratedSpeed());
-		if (burnTime <= 0 || speed == 0) {
-			lastCapacityProvided = 0;
-			return 0;
-		}
-		float capacity = stressGenerated / speed ;
-		this.lastCapacityProvided = capacity;
-		return capacity;
-	}
-
-
-	private boolean isRunning() {
-		return burnTime > 0;
+	public void read(CompoundTag tag, boolean clientPacket) {
+		super.read(tag, clientPacket);
+		burnTime = tag.getInt("BurnTime");
+		maxBurnTime = tag.getInt("MaxBurnTime");
+		stressGenerated = tag.getFloat("StressGenerated");
+		if (tag.contains("Inventory")) inventory.deserializeNBT(tag.getCompound("Inventory"));
 	}
 
 	@Override
-	protected Block getStressConfigKey() {
-		return CFMBlocks.FUEL_MOTOR.get(); // Use your custom block here
+	public void write(CompoundTag tag, boolean clientPacket) {
+		super.write(tag, clientPacket);
+		tag.putInt("BurnTime", burnTime);
+		tag.putInt("MaxBurnTime", maxBurnTime);
+		tag.putFloat("StressGenerated", stressGenerated);
+		tag.put("Inventory", inventory.serializeNBT());
 	}
+
 	class MotorValueBox extends ValueBoxTransform.Sided {
 		@Override
 		protected Vec3 getSouthLocation() {
@@ -280,8 +278,7 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		public void rotate(LevelAccessor level, BlockPos pos, BlockState state, PoseStack ms) {
 			super.rotate(level, pos, state, ms);
 			Direction facing = state.getValue(CreativeMotorBlock.FACING);
-			if (facing.getAxis() == Axis.Y) return;
-			if (getSide() != Direction.UP) return;
+			if (facing.getAxis() == Axis.Y || getSide() != Direction.UP) return;
 			TransformStack.of(ms).rotateZDegrees(-AngleHelper.horizontalAngle(facing) + 180);
 		}
 
@@ -293,25 +290,4 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 			return direction.getAxis() != facing.getAxis();
 		}
 	}
-	@Override
-	public void read(CompoundTag tag, boolean clientPacket) {
-		super.read(tag, clientPacket);
-		burnTime = tag.getInt("BurnTime");
-		maxBurnTime = tag.getInt("MaxBurnTime");
-		stressGenerated = tag.getFloat("StressGenerated");
-
-		if (tag.contains("Inventory"))
-			inventory.deserializeNBT(tag.getCompound("Inventory"));
-	}
-
-	@Override
-	public void write(CompoundTag tag, boolean clientPacket) {
-		super.write(tag, clientPacket);
-		tag.putInt("BurnTime", burnTime);
-		tag.putInt("MaxBurnTime", maxBurnTime);
-		tag.putFloat("StressGenerated", stressGenerated);
-
-		tag.put("Inventory", inventory.serializeNBT());
-	}
-
 }

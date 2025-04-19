@@ -1,10 +1,13 @@
 package com.reggarf.mods.create_fuel_motor;
 
 
-import com.reggarf.mods.create_fuel_motor.Register.CFMBlockEntityTypes;
-import com.reggarf.mods.create_fuel_motor.Register.CFMBlocks;
-import com.reggarf.mods.create_fuel_motor.Register.CFMItems;
-import com.reggarf.mods.create_fuel_motor.Register.CFMRecipes;
+
+import com.reggarf.mods.create_fuel_motor.registry.CFMRecipeSerializers;
+import com.reggarf.mods.create_fuel_motor.registry.CFMRecipeTypes;
+import com.reggarf.mods.create_fuel_motor.registry.CFMBlockEntityTypes;
+import com.reggarf.mods.create_fuel_motor.registry.CFMBlocks;
+import com.reggarf.mods.create_fuel_motor.registry.CFMItems;
+
 import com.reggarf.mods.create_fuel_motor.config.CFMConfig;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.minecraft.core.registries.Registries;
@@ -13,17 +16,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
 
 @Mod(Create_fuel_motor.MOD_ID)
 public class Create_fuel_motor {
@@ -61,8 +62,11 @@ public class Create_fuel_motor {
         CFMItems.load();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CFMClientIniter::onInitializeClient);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::generalSetup);
-        CFMRecipes.register(modEventBus);
+       // MotorFuelRecipeType.register(modEventBus);
         CFMConfig.getCommon();
+        CFMRecipeSerializers.register(modEventBus);
+        CFMRecipeTypes.register(modEventBus);
+
 
     }
 

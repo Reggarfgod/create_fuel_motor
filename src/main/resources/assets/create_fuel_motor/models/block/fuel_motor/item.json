@@ -5,7 +5,7 @@
 		"4": "create_fuel_motor:block/belt",
 		"6": "create_fuel_motor:block/fuel_motor",
 		"1_0": "create:block/axis",
-		"particle": "create:block/creative_casing"
+		"particle": "create_fuel_motor:block/fuel_motor"
 	},
 	"elements": [
 		{
