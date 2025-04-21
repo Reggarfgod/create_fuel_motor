@@ -1,0 +1,8 @@
+{
+        "type": "create_fuel_motor:motor_fuel",
+        "ingredient": {
+            "tag": "minecraft:planks"
+        },
+        "burn_time": 100,
+        "stress": 720.0
+    }

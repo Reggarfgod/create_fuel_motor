@@ -1,0 +1,8 @@
+{
+        "type": "create_fuel_motor:motor_fuel",
+        "ingredient": {
+            "item": "create:blaze_cake"
+        },
+        "burn_time": 2000,
+        "stress": 16549
+    }
