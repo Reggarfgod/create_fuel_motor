@@ -88,8 +88,8 @@ public class Create_fuel_motor {
         CFMBlocks.load();
         CFMBlockEntityTypes.load();
         CFMItems.load();
-        CFMRecipeSerializers.register(modEventBus);
-        CFMRecipeTypes.register(modEventBus);
+//        CFMRecipeSerializers.register(modEventBus);
+//        CFMRecipeTypes.register(modEventBus);
 
         // Load config
         CFMConfig.getCommon();

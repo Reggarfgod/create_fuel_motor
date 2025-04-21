@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/create_fuel_motor.main.iml" filepath="$PROJECT_DIR$/.idea/modules/create_fuel_motor.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/create_fuel_motor.test.iml" filepath="$PROJECT_DIR$/.idea/modules/create_fuel_motor.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Create_hard_mod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Create_hard_mod.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Create_hard_mod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Create_hard_mod.test.iml" />
     </modules>
   </component>
 </project>
