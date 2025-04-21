@@ -1,0 +1,31 @@
+{
+  "item_group.create_fuel_motor.tab": "Create: Fuel Motor",
+
+
+  "block.create_fuel_motor.fuel_motor": "Fuel Motor",
+  "create.tooltip.create_fuel_motor.fuel_info": "Fuel Motor is running:",
+  "create.tooltip.create_fuel_motor.fuel_status_burn": "Burn Time:",
+  "create.tooltip.create_fuel_motor.burn_time":"%ss / %ss",
+  "create.tooltip.create_fuel_motor.fuel_status_header": "Fuel Status:",
+  "create.tooltip.create_fuel_motor.fuel_status": "%s",
+  "create.tooltip.create_fuel_motor.fuel_name_header": "Fuel Type:",
+  "create.tooltip.create_fuel_motor.fuel_name": "%s",
+  "create.tooltip.create_fuel_motor.no_fuel": "Searching for fuel",
+  "create.tooltip.create_fuel_motor.generates": "Generates Stress using fuel",
+  "create.tooltip.create_fuel_motor.generates_fuel": "Supports all furnace-compatible fuel items",
+  "create.tooltip.create_fuel_motor.burns": "Burns fuel over time",
+  "create.tooltip.create_fuel_motor.fuel_burn_time": "Fuel determines how long the motor runs",
+  "create.tooltip.create_fuel_motor.max_speed": "Max Output Speed",
+  "create.tooltip.create_fuel_motor.rpm": "%s RPM",
+  "create_fuel_motor.ponder.fuel_motor.tags.fuel": "Fuel Motor",
+  "create_fuel_motor.ponder.fuel_motor.header": "Powering the Fuel Motor with Dropped Fuel",
+  "create_fuel_motor.ponder.fuel_motor.text_1": "The Fuel Motor generates Rotational Force by consuming burnable fuel",
+  "create_fuel_motor.ponder.fuel_motor.text_2": "Just drop a fuel item in the block rang of 3x3 to power the motor!",
+  "create_fuel_motor.ponder.fuel_motor.text_3": "Each fuel item powers the motor for a duration based on its burn time",
+
+
+  "create_fuel_motor.ponder.fuel_motor_1.header": "Powering the Fuel Motor with Funnel",
+  "create_fuel_motor.ponder.fuel_motor_1.text_1": "The Fuel Motor generates Rotational Force by consuming burnable fuel",
+  "create_fuel_motor.ponder.fuel_motor_1.text_2": "You can also feed fuel using a funnel!",
+  "create_fuel_motor.ponder.fuel_motor_1.text_3": "Each fuel item powers the motor for a duration based on its burn time"
+}

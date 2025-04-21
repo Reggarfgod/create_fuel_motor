@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import com.reggarf.mods.create_fuel_motor.recipe.MotorFuelRecipe;
 import com.reggarf.mods.create_fuel_motor.recipe.MotorFuelRecipeType;
+import com.reggarf.mods.create_fuel_motor.registry.CFMBlockEntityTypes;
 import com.reggarf.mods.create_fuel_motor.registry.CFMBlocks;
 import com.reggarf.mods.create_fuel_motor.registry.CFMRecipeTypes;
 import com.reggarf.mods.create_fuel_motor.util.StringFormattingTool;
@@ -26,6 +27,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Containers;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -37,7 +40,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import org.jetbrains.annotations.NotNull;
 
 
 import java.util.List;
@@ -48,30 +56,25 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 	private int burnTime = 0;
 	private int maxBurnTime = 0;
 	private float stressGenerated = 0f;
-
-	private final ItemStackHandler inventory = new ItemStackHandler(1) {
-		@Override
-		protected void onContentsChanged(int slot) {
-			setChanged();
-		}
-
-		@Override
-		public int getSlotLimit(int slot) {
-			return 1;
-		}
-	};
-	//private final LazyOptional<ItemStackHandler> inventoryCapability = LazyOptional.of(() -> inventory);
-
+	private ScrollValueBehaviour generatedSpeed;
+	public IItemHandler capability;
+	public ItemStackHandler inventory;
+	public FuelMotorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+		inventory = new ItemStackHandler(1);
+		capability = new InventoryHandler();
+	}
 	public ItemStackHandler getInventory() {
 		return inventory;
 	}
-
-	private ScrollValueBehaviour generatedSpeed;
-
-	public FuelMotorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-		super(type, pos, state);
-		setLazyTickRate(10);
+	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.registerBlockEntity(
+				Capabilities.ItemHandler.BLOCK,
+				CFMBlockEntityTypes.FUEL_MOTOR.get(),
+				(be, context) -> be.capability
+		);
 	}
+
 
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
@@ -86,20 +89,46 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		generatedSpeed.withCallback(i -> this.updateGeneratedRotation());
 		behaviours.add(generatedSpeed);
 	}
+	private class InventoryHandler extends CombinedInvWrapper {
+		@Override
+		public int getSlotLimit(int slot) {
+			return 1; // Limit stack size to 1 per slot
+		}
+		public InventoryHandler() {
+			super(inventory);
+		}
+//		@Override
+//		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+//			if (!inventory.getStackInSlot(slot).isEmpty()) {
+//				return stack;
+//			}
+//			return super.insertItem(slot, stack, simulate);
+//		}
 
-//	@Override
-//	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-//		if (cap == ForgeCapabilities.ITEM_HANDLER)
-//			return inventoryCapability.cast();
-//		return super.getCapability(cap, side);
-//	}
-//
-//	@Override
-//	public void invalidateCaps() {
-//		super.invalidateCaps();
-//		inventoryCapability.invalidate();
-//	}
+		@Override
+		public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+			if (stack.isEmpty()) return ItemStack.EMPTY;
 
+			ItemStack existing = getStackInSlot(slot);
+			if (!existing.isEmpty()) {
+				// Slot already has an item, don't insert
+				return stack;
+			}
+
+			// Only take 1 item
+			ItemStack single = stack.copy();
+			single.setCount(1);
+
+			if (!simulate) {
+				setStackInSlot(slot, single);
+			}
+
+			// Return the rest of the stack
+			ItemStack remaining = stack.copy();
+			remaining.shrink(1);
+			return remaining;
+		}
+	}
 	@Override
 	public void tick() {
 		super.tick();
@@ -147,9 +176,6 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		}
 		return false;
 	}
-
-
-
 
 
 	private Optional<MotorFuelRecipe> getFuelRecipe(ItemStack stack) {
@@ -212,7 +238,7 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
 		super.addToGoggleTooltip(tooltip, isPlayerSneaking);
 
-		if (isRunning()) {
+//		if (isRunning()) {
 			CreateLang.translate("tooltip.create_fuel_motor.fuel_status_burn")
 					.style(ChatFormatting.GRAY)
 					.forGoggles(tooltip);
@@ -243,15 +269,15 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 							.forGoggles(tooltip);
 				}
 			}
-		} else {
-			CreateLang.translate("tooltip.create_fuel_motor.no_fuel")
-					.style(ChatFormatting.WHITE)
-					.forGoggles(tooltip);
-
-			CreateLang.translate("tooltip.create_fuel_motor.fuel_status", "No fuel detected")
-					.style(ChatFormatting.RED)
-					.forGoggles(tooltip);
-		}
+//		} else {
+//			CreateLang.translate("tooltip.create_fuel_motor.no_fuel")
+//					.style(ChatFormatting.WHITE)
+//					.forGoggles(tooltip);
+//
+//			CreateLang.translate("tooltip.create_fuel_motor.fuel_status", "No fuel detected")
+//					.style(ChatFormatting.RED)
+//					.forGoggles(tooltip);
+//		}
 
 		return true;
 	}
@@ -273,7 +299,9 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		tag.putFloat("StressGenerated", stressGenerated);
 		tag.put("Inventory", inventory.serializeNBT(registries));
 	}
-	class MotorValueBox extends ValueBoxTransform.Sided {
+
+
+class MotorValueBox extends ValueBoxTransform.Sided {
 		@Override
 		protected Vec3 getSouthLocation() {
 			return VecHelper.voxelSpace(8, 8, 12.5);

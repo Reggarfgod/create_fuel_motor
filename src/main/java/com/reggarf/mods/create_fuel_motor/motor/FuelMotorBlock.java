@@ -68,6 +68,7 @@ public class FuelMotorBlock extends DirectionalKineticBlock implements IBE<FuelM
 		}
 	}
 
+
 	// IRotate:
 
 	@Override

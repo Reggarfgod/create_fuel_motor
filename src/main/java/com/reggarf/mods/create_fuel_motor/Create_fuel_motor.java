@@ -2,6 +2,7 @@ package com.reggarf.mods.create_fuel_motor;
 
 import com.mojang.logging.LogUtils;
 import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
+
 import com.reggarf.mods.create_fuel_motor.registry.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
@@ -34,6 +35,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -83,13 +85,14 @@ public class Create_fuel_motor {
         TAB_REGISTRAR.register(modEventBus);
         NeoForge.EVENT_BUS.register(this);
         modEventBus.addListener(CFMClientIniter::onInitializeClient);
-
+        modEventBus.addListener(RegisterCapabilitiesEvent.class, CFMCapabilities::register);
         // Register content
         CFMBlocks.load();
         CFMBlockEntityTypes.load();
         CFMItems.load();
         CFMRecipeSerializers.register(modEventBus);
         CFMRecipeTypes.register(modEventBus);
+
 
         // Load config
         modContainer.registerConfig(ModConfig.Type.COMMON, CommonConfig.COMMON_CONFIG);
