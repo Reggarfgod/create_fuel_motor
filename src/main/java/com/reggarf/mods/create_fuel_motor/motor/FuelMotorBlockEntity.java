@@ -5,6 +5,7 @@ import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import com.reggarf.mods.create_fuel_motor.recipe.MotorFuelRecipe;
 import com.reggarf.mods.create_fuel_motor.recipe.MotorFuelRecipeType;
 import com.reggarf.mods.create_fuel_motor.registry.CFMBlocks;
+import com.reggarf.mods.create_fuel_motor.registry.CFMRecipeTypes;
 import com.reggarf.mods.create_fuel_motor.util.StringFormattingTool;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlock;
@@ -27,6 +28,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -144,15 +148,24 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		return false;
 	}
 
+
+
+
+
 	private Optional<MotorFuelRecipe> getFuelRecipe(ItemStack stack) {
-		return level.getRecipeManager()
-				.getAllRecipesFor(MotorFuelRecipeType.INSTANCE)
-				.stream()
-				.filter(recipe -> recipe.getIngredient().test(stack))
-				.findFirst();
+		RecipeManager recipeManager = level.getRecipeManager();
+
+		List<RecipeHolder<MotorFuelRecipe>> holders = recipeManager.getAllRecipesFor(CFMRecipeTypes.MOTOR_FUEL_TYPE.get());
+
+		for (RecipeHolder<MotorFuelRecipe> holder : holders) {
+			MotorFuelRecipe recipe = holder.value();
+			if (recipe.getIngredient().test(stack)) {
+				return Optional.of(recipe);
+			}
+		}
+
+		return Optional.empty();
 	}
-
-
 
 	private void applyFuelRecipe(MotorFuelRecipe recipe) {
 		burnTime = maxBurnTime = recipe.getBurnTime();

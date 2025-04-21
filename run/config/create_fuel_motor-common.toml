@@ -1,0 +1,17 @@
+#Make sure config changes are duplicated on both Clients and the Server when running a dedicated Server,
+# as the config isnt synced between Clients and Server.
+#General Settings
+[general]
+	#If audio should be enabled or not.
+	audio_enabled = true
+
+#Fuel Motor
+[fuel_motor]
+	#Fuel Motor min/max RPM.
+	# Default: 256
+	# Range: > 1
+	motor_rpm_range = 256
+	#Pickup range (in blocks) for fuel items around the motor.
+	# Default: 3.0
+	# Range: 0.0 ~ 16.0
+	fuel_pickup_range = 3.0

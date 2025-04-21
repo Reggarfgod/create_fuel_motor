@@ -1,0 +1,8 @@
+{
+        "type": "create_fuel_motor:motor_fuel",
+        "ingredient": {
+            "item": "minecraft:blaze_powder"
+        },
+        "burn_time": 500,
+        "stress": 1934
+    }

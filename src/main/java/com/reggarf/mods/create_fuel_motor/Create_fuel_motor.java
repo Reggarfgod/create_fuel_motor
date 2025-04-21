@@ -1,7 +1,7 @@
 package com.reggarf.mods.create_fuel_motor;
 
 import com.mojang.logging.LogUtils;
-import com.reggarf.mods.create_fuel_motor.config.CFMConfig;
+import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import com.reggarf.mods.create_fuel_motor.registry.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
@@ -28,6 +28,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -52,50 +53,48 @@ public class Create_fuel_motor {
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID)
-            .defaultCreativeTab((ResourceKey<CreativeModeTab>) null)
-            .setTooltipModifierFactory(item ->
-                    new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
-                            .andThen(TooltipModifier.mapNull(KineticStats.create(item)))
-            );
+    public static final CreateRegistrate BASE_REGISTRATE = CreateRegistrate.create(MOD_ID);
 
-    static {
-        REGISTRATE.setTooltipModifierFactory(item -> new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
-                .andThen(TooltipModifier.mapNull(KineticStats.create(item))));
+    private static DeferredRegister<CreativeModeTab> TAB_REGISTRAR = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> tab = TAB_REGISTRAR.register("create_better_motors_tab",
+            () -> CreativeModeTab.builder()
+                    .title(Component.translatable("item_group." + MOD_ID + ".tab"))
+                    .icon(CFMBlocks.FUEL_MOTOR::asStack)
+                    .build()
+    );
+
+    public static final CreateRegistrate REGISTRATE = BASE_REGISTRATE.setCreativeTab(tab);
+
+
+    public static final ResourceKey<CreativeModeTab> CREATIVE_TAB_KEY = ResourceKey.create(Registries.CREATIVE_MODE_TAB,
+            ResourceLocation.fromNamespaceAndPath(MOD_ID, "create_better_motors_tab"));
+
+
+
+    public static ResourceLocation asResource(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
-
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB_KEY = CREATIVE_MODE_TABS.register(MOD_ID, () -> CreativeModeTab.builder()
-            .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-            .icon(() -> CFMBlocks.FUEL_MOTOR.get().asItem().getDefaultInstance())
-            .title(Component.translatable("itemGroup.createaddition.main"))
-            .displayItems((itemDisplayParameters, output) -> REGISTRATE.getAll(Registries.ITEM).forEach((item -> {
-                output.accept(item.get());
-            })))
-            .build());
 
     public Create_fuel_motor(IEventBus modEventBus, ModContainer modContainer) {
-        REGISTRATE.registerEventListeners(modEventBus);
+        ModLoadingContext modLoadingContext = ModLoadingContext.get();
 
-        modEventBus.addListener(this::commonSetup);
-       // BLOCKS.register(modEventBus);
-        //ITEMS.register(modEventBus);
-       // CREATIVE_MODE_TABS.register(modEventBus);
-       // NeoForge.EVENT_BUS.register(this);
-       // modEventBus.addListener(this::addCreative);
+        LOGGER.info("Hello 1.20.1 Create!");
+        BASE_REGISTRATE.registerEventListeners(modEventBus);
+        TAB_REGISTRAR.register(modEventBus);
+        NeoForge.EVENT_BUS.register(this);
+        modEventBus.addListener(CFMClientIniter::onInitializeClient);
 
         // Register content
         CFMBlocks.load();
         CFMBlockEntityTypes.load();
         CFMItems.load();
-//        CFMRecipeSerializers.register(modEventBus);
-//        CFMRecipeTypes.register(modEventBus);
+        CFMRecipeSerializers.register(modEventBus);
+        CFMRecipeTypes.register(modEventBus);
 
         // Load config
-        CFMConfig.getCommon();
+        modContainer.registerConfig(ModConfig.Type.COMMON, CommonConfig.COMMON_CONFIG);
 
         // Register client initializer and general setup
-        modEventBus.addListener(CFMClientIniter::onInitializeClient);
         modEventBus.addListener(this::generalSetup);
 
         // Register Forge event handlers
@@ -103,13 +102,20 @@ public class Create_fuel_motor {
         NeoForge.EVENT_BUS.register(CFMMHandler.class);
 
     }
-    public static ResourceLocation asResource(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
-    }
     private void generalSetup(final FMLCommonSetupEvent event) {
     }
+    @SubscribeEvent
+    public void onServerStarting(ServerStartingEvent event) {
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
+    }
+
+    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+    @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    public static class ClientModEvents {
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event) {
+
+        }
     }
 
 }

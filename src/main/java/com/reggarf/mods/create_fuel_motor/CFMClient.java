@@ -19,9 +19,9 @@ public class CFMClient {
         PonderIndex.addPlugin(new PonderPlugin());
 
 
-        ModContainer modContainer = ModList.get()
-                .getModContainerById(Create_fuel_motor.MOD_ID)
-                .orElseThrow(() -> new IllegalStateException("What the..."));
+//        ModContainer modContainer = ModList.get()
+//                .getModContainerById(Create_fuel_motor.MOD_ID)
+//                .orElseThrow(() -> new IllegalStateException("What the..."));
 //
 //        modContainer.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
 //                () -> new ConfigScreenHandler.ConfigScreenFactory(
