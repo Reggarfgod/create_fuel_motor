@@ -4,6 +4,7 @@ package com.reggarf.mods.create_fuel_motor.datagen.provider;
 
 import com.reggarf.mods.create_fuel_motor.registry.CFMRecipeTypes;
 
+import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.data.recipe.ProcessingRecipeGen;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import net.minecraft.core.HolderLookup;
@@ -109,7 +110,9 @@ public class MotorFuelRecipeProvider extends ProcessingRecipeGen {
         motorFuel(100, 120f)
                 .require(Ingredient.of(Items.HAY_BLOCK))
                 .save(output, "hay_block");
-
+        motorFuel(2000, 16549f)
+                .require(Ingredient.of(AllItems.BLAZE_CAKE))
+                .save(output, "blaze_cake");
 
     }
 

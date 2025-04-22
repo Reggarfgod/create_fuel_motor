@@ -1,5 +1,6 @@
-// 1.21.1	2025-04-22T21:05:28.2536563	Create's Processing Recipes: motor_fuel
+// 1.21.1	2025-04-22T23:35:51.3691989	Create's Processing Recipes: motor_fuel
 5e9547b81a5f66a71f7680e0a0dd12be7b574636 data/create_fuel_motor/recipe/motor_fuel/bamboo.json
+15be68911dd21a8c6ca97b6848ad32efe74e30b9 data/create_fuel_motor/recipe/motor_fuel/blaze_cake.json
 9ae07e2884e00bdf38319390517ba7a8bfd19065 data/create_fuel_motor/recipe/motor_fuel/blaze_powder.json
 dec76d3fd99532157d8c531e61da301941e51f7d data/create_fuel_motor/recipe/motor_fuel/blaze_rod.json
 53c712c064d068b32b908a8f952b9a91020c12d9 data/create_fuel_motor/recipe/motor_fuel/charcoal.json
