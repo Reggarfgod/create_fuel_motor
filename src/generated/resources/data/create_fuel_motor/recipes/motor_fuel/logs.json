@@ -1,0 +1,8 @@
+{
+  "type": "create_fuel_motor:motor_fuel",
+  "burn_time": 400,
+  "ingredient": {
+    "tag": "minecraft:logs"
+  },
+  "stress": 250.0
+}

@@ -2,6 +2,7 @@ package com.reggarf.mods.create_fuel_motor.content.motor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
+
 import com.reggarf.mods.create_fuel_motor.recipe.MotorFuelRecipe;
 import com.reggarf.mods.create_fuel_motor.recipe.MotorFuelRecipeType;
 import com.reggarf.mods.create_fuel_motor.registry.CFMBlocks;
