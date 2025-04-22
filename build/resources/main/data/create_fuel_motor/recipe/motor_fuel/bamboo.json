@@ -1,0 +1,8 @@
+{
+  "type": "create_fuel_motor:motor_fuel",
+  "burn_time": 200,
+  "ingredient": {
+    "item": "minecraft:bamboo"
+  },
+  "stress": 500.0
+}

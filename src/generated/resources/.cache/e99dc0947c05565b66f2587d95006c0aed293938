@@ -1,0 +1,7 @@
+// 1.21.1	2025-04-22T18:59:46.1551826	Create's Processing Recipes: motor_fuel
+e91375d37076b4dbc992035987b28aec4128ed53 data/create_fuel_motor/recipe/motor_fuel/bamboo.json
+cbc06da939dccb73af185534a136fda55c763593 data/create_fuel_motor/recipe/motor_fuel/blaze_rod.json
+401a4d24d3ca6ab47cc4d7ca4d9415575986a369 data/create_fuel_motor/recipe/motor_fuel/charcoal.json
+85b5ae6143e79a51a963326ed7a5923c90426a2b data/create_fuel_motor/recipe/motor_fuel/coal.json
+dcc365d1dc83603b5044074fcfa84f8ad49e67e2 data/create_fuel_motor/recipe/motor_fuel/dried_kelp_block.json
+6103bd914fbb0638d4e70432dd8a55c96e1a9248 data/create_fuel_motor/recipe/motor_fuel/stick.json

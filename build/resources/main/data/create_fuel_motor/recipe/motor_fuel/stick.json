@@ -1,8 +1,8 @@
 {
   "type": "create_fuel_motor:motor_fuel",
-  "burn_time": 900,
+  "burn_time": 100,
   "ingredient": {
-    "item": "minecraft:coal"
+    "item": "minecraft:stick"
   },
-  "stress": 1350.0
+  "stress": 100.0
 }

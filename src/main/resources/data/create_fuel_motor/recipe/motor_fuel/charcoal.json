@@ -1,8 +1,0 @@
-{
-        "type": "create_fuel_motor:motor_fuel",
-        "ingredient": {
-            "item": "minecraft:charcoal"
-        },
-        "burn_time": 900,
-        "stress": 1350
-    }
