@@ -1,7 +1,13 @@
-// 1.21.1	2025-04-22T18:59:46.1551826	Create's Processing Recipes: motor_fuel
-e91375d37076b4dbc992035987b28aec4128ed53 data/create_fuel_motor/recipe/motor_fuel/bamboo.json
-cbc06da939dccb73af185534a136fda55c763593 data/create_fuel_motor/recipe/motor_fuel/blaze_rod.json
-401a4d24d3ca6ab47cc4d7ca4d9415575986a369 data/create_fuel_motor/recipe/motor_fuel/charcoal.json
+// 1.21.1	2025-04-22T21:05:28.2536563	Create's Processing Recipes: motor_fuel
+5e9547b81a5f66a71f7680e0a0dd12be7b574636 data/create_fuel_motor/recipe/motor_fuel/bamboo.json
+9ae07e2884e00bdf38319390517ba7a8bfd19065 data/create_fuel_motor/recipe/motor_fuel/blaze_powder.json
+dec76d3fd99532157d8c531e61da301941e51f7d data/create_fuel_motor/recipe/motor_fuel/blaze_rod.json
+53c712c064d068b32b908a8f952b9a91020c12d9 data/create_fuel_motor/recipe/motor_fuel/charcoal.json
 85b5ae6143e79a51a963326ed7a5923c90426a2b data/create_fuel_motor/recipe/motor_fuel/coal.json
-dcc365d1dc83603b5044074fcfa84f8ad49e67e2 data/create_fuel_motor/recipe/motor_fuel/dried_kelp_block.json
-6103bd914fbb0638d4e70432dd8a55c96e1a9248 data/create_fuel_motor/recipe/motor_fuel/stick.json
+bf944368788ac228c088e85c5ae755e070ec67a4 data/create_fuel_motor/recipe/motor_fuel/coal_block.json
+371ce822b3ce40925094d14ca174593630d1f661 data/create_fuel_motor/recipe/motor_fuel/dried_kelp_block.json
+17fd9471987efe2acafeeef6cc8a55c9eda95944 data/create_fuel_motor/recipe/motor_fuel/hay_block.json
+026a8890a094b12f3817ba50a16b5cf94210eacf data/create_fuel_motor/recipe/motor_fuel/logs.json
+4e2d6a8455d9d1e6ccc9d796c7ccce2228fdbd68 data/create_fuel_motor/recipe/motor_fuel/planks.json
+78e898998664c36b59b7eae23a71e066698690eb data/create_fuel_motor/recipe/motor_fuel/scaffolding.json
+c2940247fee48174f89f9c0ab39698b6ba5d185f data/create_fuel_motor/recipe/motor_fuel/stick.json

@@ -1,6 +1,6 @@
 {
   "type": "create_fuel_motor:motor_fuel",
-  "burn_time": 900,
+  "burn_time": 850,
   "ingredient": {
     "item": "minecraft:charcoal"
   },

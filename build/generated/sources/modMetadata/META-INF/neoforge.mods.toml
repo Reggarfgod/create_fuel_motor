@@ -17,7 +17,7 @@ issueTrackerURL="https://github.com/Reggarfgod/create_fuel_motor/issues" #option
 # The modid of the mod
 modId = "create_fuel_motor" #mandatory
 # The version number of the mod
-version = "1.1.0" #mandatory
+version = "1.2.0" #mandatory
 # A display name for the mod
 displayName = "create: Fuel Motor" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.neoforge.net/docs/misc/updatechecker/

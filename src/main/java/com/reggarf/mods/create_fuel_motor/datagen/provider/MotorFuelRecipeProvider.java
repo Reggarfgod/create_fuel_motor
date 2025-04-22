@@ -7,9 +7,11 @@ import com.reggarf.mods.create_fuel_motor.registry.CFMRecipeTypes;
 import com.simibubi.create.foundation.data.recipe.ProcessingRecipeGen;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import org.jetbrains.annotations.NotNull;
@@ -52,29 +54,63 @@ public class MotorFuelRecipeProvider extends ProcessingRecipeGen {
 
     @Override
     protected void buildRecipes(@NotNull RecipeOutput output) {
+
+        // Core fuels
         motorFuel(900, 1350f)
                 .require(Ingredient.of(Items.COAL))
                 .save(output, "coal");
 
-        motorFuel(900, 1250f)
+        motorFuel(850, 1250f)
                 .require(Ingredient.of(Items.CHARCOAL))
                 .save(output, "charcoal");
 
-        motorFuel(100, 100f)
+        motorFuel(8100, 1350f)
+                .require(Ingredient.of(Items.COAL_BLOCK))
+                .save(output, "coal_block");
+
+
+        motorFuel(400, 800f)
+                .require(Ingredient.of(Items.BLAZE_ROD))
+                .save(output, "blaze_rod");
+        motorFuel(200, 850f)
+                .require(Ingredient.of(Items.BLAZE_POWDER))
+                .save(output, "blaze_powder");
+
+        motorFuel(450, 1180f)
+                .require(Ingredient.of(Items.DRIED_KELP_BLOCK))
+                .save(output, "dried_kelp_block");
+
+        // Generic wooden logs (all types)
+        motorFuel(400, 250f)
+                .require(Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("minecraft", "logs"))))
+                .save(output, "logs");
+
+        // Generic wooden planks
+        motorFuel(100, 230f)
+                .require(Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("minecraft", "planks"))))
+                .save(output, "planks");
+
+        // Sticks
+        motorFuel(100, 81f)
                 .require(Ingredient.of(Items.STICK))
                 .save(output, "stick");
 
-        motorFuel(200, 150f)
+        // Bamboo
+        motorFuel(100, 150f)
                 .require(Ingredient.of(Items.BAMBOO))
                 .save(output, "bamboo");
 
-        motorFuel(1600, 1200f)
-                .require(Ingredient.of(Items.BLAZE_ROD))
-                .save(output, "blaze_rod");
+        // Scaffolding (made from bamboo + string)
+        motorFuel(200, 250f)
+                .require(Ingredient.of(Items.SCAFFOLDING))
+                .save(output, "scaffolding");
 
-        motorFuel(300, 500f)
-                .require(Ingredient.of(Items.DRIED_KELP_BLOCK))
-                .save(output, "dried_kelp_block");
+        // Hay Block - decent fuel
+        motorFuel(100, 120f)
+                .require(Ingredient.of(Items.HAY_BLOCK))
+                .save(output, "hay_block");
+
+
     }
 
 
