@@ -86,6 +86,7 @@ public class Create_fuel_motor {
         NeoForge.EVENT_BUS.register(this);
         modEventBus.addListener(CFMClientIniter::onInitializeClient);
         modEventBus.addListener(RegisterCapabilitiesEvent.class, CFMCapabilities::register);
+
         // Register content
         CFMBlocks.load();
         CFMBlockEntityTypes.load();

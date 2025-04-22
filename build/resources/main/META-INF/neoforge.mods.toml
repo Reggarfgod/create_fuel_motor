@@ -19,7 +19,7 @@ modId = "create_fuel_motor" #mandatory
 # The version number of the mod
 version = "1.1.0" #mandatory
 # A display name for the mod
-displayName = "create_fuel_motor" #mandatory
+displayName = "create: Fuel Motor" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.neoforge.net/docs/misc/updatechecker/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI

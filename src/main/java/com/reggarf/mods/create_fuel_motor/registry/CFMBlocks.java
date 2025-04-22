@@ -38,5 +38,6 @@ public class CFMBlocks {
                     .transform(customItemModel())
                     .register();
 
+
         public static void load() {  }
 }

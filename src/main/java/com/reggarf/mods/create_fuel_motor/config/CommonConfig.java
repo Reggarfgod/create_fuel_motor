@@ -45,7 +45,7 @@ public class CommonConfig {
 		}
 	@SubscribeEvent
 	public static void onLoad(ModConfigEvent.Loading event) {
-		loadConfig(CommonConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("create_foel_motors_common.toml"));
+		loadConfig(CommonConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("create_fuel_motor-common.toml"));
 	}
 	public static void loadConfig(ModConfigSpec spec, java.nio.file.Path path) {
 		final CommentedFileConfig configData = CommentedFileConfig.builder(path)

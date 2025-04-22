@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "create_fuel_motor:fuel_motor",
+    "id": "create_fuel_motor:fuel_motor",
     "count": 1
   }
 }

@@ -89,6 +89,7 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		generatedSpeed.withCallback(i -> this.updateGeneratedRotation());
 		behaviours.add(generatedSpeed);
 	}
+
 	private class InventoryHandler extends CombinedInvWrapper {
 		@Override
 		public int getSlotLimit(int slot) {
@@ -97,6 +98,7 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		public InventoryHandler() {
 			super(inventory);
 		}
+
 //		@Override
 //		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 //			if (!inventory.getStackInSlot(slot).isEmpty()) {
@@ -136,6 +138,7 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 
 		if (burnTime > 0) {
 			burnTime--;
+			setChanged();
 			sendData(); //Sync to client
 		} else if (!tryConsumeFuelFromInventory() && !tryPickupFuel()) {
 			updateGeneratedRotation();
@@ -207,9 +210,16 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 		serverLevel.sendParticles(ParticleTypes.FLAME, center.x, center.y + 0.25, center.z, 6, 0.25, 0.25, 0.25, 0.01);
 		serverLevel.sendParticles(ParticleTypes.SMOKE, center.x, center.y + 0.3, center.z, 3, 0.2, 0.2, 0.2, 0.005);
 	}
-
+	@Override
+	public void initialize() {
+		super.initialize();
+		if (!hasSource() || getGeneratedSpeed() > getTheoreticalSpeed())
+			updateGeneratedRotation();
+	}
 	@Override
 	public float getGeneratedSpeed() {
+		if (!CFMBlocks.FUEL_MOTOR.has(getBlockState()))
+			return 0;
 		return isRunning() ? convertToDirection(generatedSpeed.getValue(), getBlockState().getValue(FuelMotorBlock.FACING)) : 0;
 	}
 
@@ -238,7 +248,8 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
 		super.addToGoggleTooltip(tooltip, isPlayerSneaking);
 
-//		if (isRunning()) {
+		if (isRunning()) {
+
 			CreateLang.translate("tooltip.create_fuel_motor.fuel_status_burn")
 					.style(ChatFormatting.GRAY)
 					.forGoggles(tooltip);
@@ -269,15 +280,16 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 							.forGoggles(tooltip);
 				}
 			}
-//		} else {
-//			CreateLang.translate("tooltip.create_fuel_motor.no_fuel")
-//					.style(ChatFormatting.WHITE)
-//					.forGoggles(tooltip);
-//
-//			CreateLang.translate("tooltip.create_fuel_motor.fuel_status", "No fuel detected")
-//					.style(ChatFormatting.RED)
-//					.forGoggles(tooltip);
-//		}
+
+		} else {
+			CreateLang.translate("tooltip.create_fuel_motor.no_fuel")
+					.style(ChatFormatting.WHITE)
+					.forGoggles(tooltip);
+
+			CreateLang.translate("tooltip.create_fuel_motor.fuel_status", "No fuel detected")
+					.style(ChatFormatting.RED)
+					.forGoggles(tooltip);
+		}
 
 		return true;
 	}
@@ -285,23 +297,34 @@ public class FuelMotorBlockEntity extends GeneratingKineticBlockEntity {
 	@Override
 	protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(tag, registries, clientPacket);
-		burnTime = tag.getInt("BurnTime");
-		maxBurnTime = tag.getInt("MaxBurnTime");
-		stressGenerated = tag.getFloat("StressGenerated");
-		if (tag.contains("Inventory")) inventory.deserializeNBT(registries, tag.getCompound("inventory"));
+//		burnTime = tag.getInt("BurnTime");
+//		maxBurnTime = tag.getInt("MaxBurnTime");
+//		stressGenerated = tag.getFloat("StressGenerated");
+		if (tag.contains("BurnTime")) burnTime = tag.getInt("BurnTime");
+		if (tag.contains("MaxBurnTime")) maxBurnTime = tag.getInt("MaxBurnTime");
+		if (tag.contains("StressGenerated")) stressGenerated = tag.getFloat("StressGenerated");
+
+		inventory.deserializeNBT(registries, tag.getCompound("InputInventory"));
+//		if (clientPacket && generatedSpeed != null) {
+//			generatedSpeed.setValue(tag.getInt("Speed"));
+//		}
 	}
 
 	@Override
-	public void writeSafe(CompoundTag tag, HolderLookup.Provider registries) {
-		super.writeSafe(tag, registries);
+	protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+		super.write(tag, registries, clientPacket);
 		tag.putInt("BurnTime", burnTime);
 		tag.putInt("MaxBurnTime", maxBurnTime);
 		tag.putFloat("StressGenerated", stressGenerated);
-		tag.put("Inventory", inventory.serializeNBT(registries));
+		tag.put("InputInventory", inventory.serializeNBT(registries));
+//		if (clientPacket && generatedSpeed != null) {
+//			tag.putInt("Speed", generatedSpeed.getValue());
+//		}
 	}
 
 
-class MotorValueBox extends ValueBoxTransform.Sided {
+
+	public class MotorValueBox extends ValueBoxTransform.Sided {
 		@Override
 		protected Vec3 getSouthLocation() {
 			return VecHelper.voxelSpace(8, 8, 12.5);
@@ -317,8 +340,12 @@ class MotorValueBox extends ValueBoxTransform.Sided {
 		public void rotate(LevelAccessor level, BlockPos pos, BlockState state, PoseStack ms) {
 			super.rotate(level, pos, state, ms);
 			Direction facing = state.getValue(CreativeMotorBlock.FACING);
-			if (facing.getAxis() == Axis.Y || getSide() != Direction.UP) return;
-			TransformStack.of(ms).rotateZDegrees(-AngleHelper.horizontalAngle(facing) + 180);
+			if (facing.getAxis() == Axis.Y)
+				return;
+			if (getSide() != Direction.UP)
+				return;
+			TransformStack.of(ms)
+					.rotateZDegrees(-AngleHelper.horizontalAngle(facing) + 180);
 		}
 
 		@Override
