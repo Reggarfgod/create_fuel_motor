@@ -12,9 +12,11 @@ public class CommonConfig {
 	public static ForgeConfigSpec.BooleanValue audio_Enabled;
 	public static ForgeConfigSpec.DoubleValue fuel_motor_pickup_range;
 
+	private static final ForgeConfigSpec.Builder builder= new ForgeConfigSpec.Builder();
 
+	public static ForgeConfigSpec COMMON_CONFIG;
 
-		public CommonConfig(ForgeConfigSpec.Builder builder) {
+	static {
 			builder.comment("Make sure config changes are duplicated on both Clients and the Server when running a dedicated Server,")
 					.comment(" as the config isnt synced between Clients and Server.");
 
@@ -31,5 +33,8 @@ public class CommonConfig {
 					.defineInRange("fuel_pickup_range", 3, 0.0, 16.0);
 
 			builder.pop();
+
+			COMMON_CONFIG = builder.build();
 		}
+
 }

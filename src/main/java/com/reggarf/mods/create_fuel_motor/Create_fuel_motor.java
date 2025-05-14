@@ -1,6 +1,12 @@
 package com.reggarf.mods.create_fuel_motor;
 
-import com.reggarf.mods.create_fuel_motor.config.CFMConfig;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
+import com.reggarf.mods.create_fuel_motor.config.DataConfig;
+import com.reggarf.mods.create_fuel_motor.datapack.DataLoaderRepositorySource;
+import com.reggarf.mods.create_fuel_motor.datapack.RepoType;
 import com.reggarf.mods.create_fuel_motor.registry.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
@@ -11,15 +17,23 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Mod(Create_fuel_motor.MOD_ID)
 public class Create_fuel_motor {
@@ -27,6 +41,10 @@ public class Create_fuel_motor {
     public static final String MOD_ID = "create_fuel_motor";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final CreateRegistrate BASE_REGISTRATE = CreateRegistrate.create(MOD_ID);
+    public static final Logger LOG = LogManager.getLogger(MOD_ID);
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
+    public static DataConfig config;
+    public static Path configDir;
 
     // Creative tab
     private static final DeferredRegister<CreativeModeTab> TAB_REGISTRAR =
@@ -64,16 +82,36 @@ public class Create_fuel_motor {
         CFMRecipeTypes.register(modEventBus);
 
         // Load config
-        CFMConfig.getCommon();
-
+//        CFMConfig.getCommon();
+        ModLoadingContext.get().registerConfig(
+                ModConfig.Type.COMMON,
+                CommonConfig.COMMON_CONFIG,
+                "Create Fuel Motor/create_fuel_motor-common.toml"
+        );
         // Register client initializer and general setup
         modEventBus.addListener(CFMClientIniter::onInitializeClient);
         modEventBus.addListener(this::generalSetup);
 
         // Register Forge event handlers
         forgeEventBus.register(CFMMHandler.class);
-    }
 
+        configDir = FMLPaths.CONFIGDIR.get().resolve("Create Fuel Motor");
+        config = DataConfig.load(configDir);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::PackRepositories);
+
+    }
+    private void PackRepositories(AddPackFindersEvent event) {
+
+        switch (event.getPackType()) {
+
+            case SERVER_DATA -> {
+
+                event.addRepositorySource(new DataLoaderRepositorySource(RepoType.DATA, config, config.dataPacks,configDir));
+            }
+
+            default -> Create_fuel_motor.LOG.warn("Encountered unknown pack type {}. Nothing will be loaded for this type.", event.getPackType().name());
+        }
+    }
     private void generalSetup(final FMLCommonSetupEvent event) {
     }
 

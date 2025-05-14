@@ -4,8 +4,7 @@
   "package": "com.reggarf.mods.create_fuel_motor.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "create_fuel_motor.refmap.json",
-  "mixins": [
-  ],
+  "mixins": [],
   "client": [
   ],
   "injectors": {
