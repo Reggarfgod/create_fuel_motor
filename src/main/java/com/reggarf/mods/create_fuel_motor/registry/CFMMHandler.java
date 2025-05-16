@@ -2,6 +2,7 @@ package com.reggarf.mods.create_fuel_motor.registry;
 
 
 
+import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -19,8 +20,6 @@ import static net.minecraft.network.chat.TextColor.fromRgb;
 @EventBusSubscriber
 public class CFMMHandler {
 
-    public static boolean enabled = true;
-
     public static String titleColor = "DDA0FF";
     public static String zapColor = "00FFFF";
     public static String discordColor = "5599FF";
@@ -28,13 +27,29 @@ public class CFMMHandler {
     public static String disableColor = "00FF66";
     public static String githubColor = "A9A9A9";
 
+//    @SubscribeEvent
+//    public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+//        if (!(event.getEntity() instanceof ServerPlayer player) || !enabled) return;
+//
+//        CompoundTag persistentData = player.getPersistentData();
+//        CompoundTag forgeData = persistentData.getCompound(ServerPlayer.PERSISTED_NBT_TAG);
+//
+//
+//        if (!forgeData.getBoolean("create_hard_mod_hasJoinedBefore")) {
+//            sendStyledMessages(player); // Send welcome + links
+//            forgeData.putBoolean("create_hard_mod_hasJoinedBefore", true);
+//            persistentData.put(ServerPlayer.PERSISTED_NBT_TAG, forgeData);
+//        }
+//    }
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player) || !enabled) return;
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        // Move config check here to ensure it's accessed after config is loaded
+        if (!CommonConfig.message_Enabled.get()) return;
 
         CompoundTag persistentData = player.getPersistentData();
         CompoundTag forgeData = persistentData.getCompound(ServerPlayer.PERSISTED_NBT_TAG);
-
 
         if (!forgeData.getBoolean("create_hard_mod_hasJoinedBefore")) {
             sendStyledMessages(player); // Send welcome + links

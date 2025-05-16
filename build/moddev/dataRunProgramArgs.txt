@@ -24,6 +24,6 @@ forgedatauserdev
 create_fuel_motor
 --all
 --output
-"D:\\Download\\MOD\\New folder\\src\\generated\\resources"
+D:\\Download\\MOD\\create_fuel_motor\\src\\generated\\resources
 --existing
-"D:\\Download\\MOD\\New folder\\src\\main\\resources"
+D:\\Download\\MOD\\create_fuel_motor\\src\\main\\resources

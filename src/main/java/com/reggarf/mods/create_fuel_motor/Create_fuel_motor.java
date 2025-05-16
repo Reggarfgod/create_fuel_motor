@@ -1,30 +1,18 @@
 package com.reggarf.mods.create_fuel_motor;
 
-import com.mojang.logging.LogUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
-
+import com.reggarf.mods.create_fuel_motor.datapack.DataLoaderRepositorySource;
+import com.reggarf.mods.create_fuel_motor.datapack.JoinDataName;
+import com.reggarf.mods.create_fuel_motor.datapack.RepoType;
 import com.reggarf.mods.create_fuel_motor.registry.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import com.simibubi.create.foundation.item.ItemDescription;
-import com.simibubi.create.foundation.item.KineticStats;
-import com.simibubi.create.foundation.item.TooltipModifier;
-import net.createmod.catnip.lang.FontHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -35,17 +23,17 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.function.Supplier;
+import java.nio.file.Path;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Create_fuel_motor.MOD_ID)
@@ -53,7 +41,12 @@ public class Create_fuel_motor {
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "create_fuel_motor";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    //private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOG = LogManager.getLogger(MOD_ID);
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
+
+    public static Path configDir;
+
 
     public static final CreateRegistrate BASE_REGISTRATE = CreateRegistrate.create(MOD_ID);
 
@@ -80,7 +73,7 @@ public class Create_fuel_motor {
     public Create_fuel_motor(IEventBus modEventBus, ModContainer modContainer) {
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
 
-        LOGGER.info("Hello 1.20.1 Create!");
+        LOG.info("Hello 1.20.1 Create!");
         BASE_REGISTRATE.registerEventListeners(modEventBus);
         TAB_REGISTRAR.register(modEventBus);
         NeoForge.EVENT_BUS.register(this);
@@ -96,15 +89,35 @@ public class Create_fuel_motor {
 
 
         // Load config
-        modContainer.registerConfig(ModConfig.Type.COMMON, CommonConfig.COMMON_CONFIG);
+        modContainer.registerConfig(
+                ModConfig.Type.COMMON,
+                CommonConfig.COMMON_CONFIG,
+                "Create Fuel Motor/create_fuel_motor-common.toml"
+        );
 
         // Register client initializer and general setup
         modEventBus.addListener(this::generalSetup);
 
+
         // Register Forge event handlers
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(CFMMHandler.class);
+        NeoForge.EVENT_BUS.register(JoinDataName.class);
+        configDir = FMLPaths.CONFIGDIR.get().resolve("Create Fuel Motor");
+        modEventBus.addListener(this::PackRepositories);
 
+    }
+    private void PackRepositories(AddPackFindersEvent event) {
+
+        switch (event.getPackType()) {
+
+            case SERVER_DATA -> {
+
+                event.addRepositorySource(new DataLoaderRepositorySource(RepoType.DATA,configDir));
+            }
+
+            default -> Create_fuel_motor.LOG.warn("Encountered unknown pack type {}. Nothing will be loaded for this type.", event.getPackType().name());
+        }
     }
     private void generalSetup(final FMLCommonSetupEvent event) {
     }

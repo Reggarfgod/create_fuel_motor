@@ -18,6 +18,8 @@ public class CommonConfig {
 	public static final String catagory_fuel_motor = "fuel_motor";
 	public static ModConfigSpec.IntValue fuel_motor_rpm_range;
 	public static ModConfigSpec.BooleanValue audio_Enabled;
+	public static ModConfigSpec.BooleanValue data_Enabled;
+	public static ModConfigSpec.BooleanValue message_Enabled;
 	public static ModConfigSpec.DoubleValue fuel_motor_pickup_range;
 
 	private static final ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -31,6 +33,10 @@ public class CommonConfig {
 			builder.comment("General Settings").push(catagory_general);
 			audio_Enabled = builder.comment("If audio should be enabled or not.")
 					.define("audio_enabled", true);
+		    data_Enabled = builder.comment("data recipe loading should be enabled or not.")
+				.define("data_enabled", true);
+			message_Enabled = builder.comment("If Message should be enabled or not.")
+				.define("message_enabled", true);
 			builder.pop();
 
 			builder.comment("Fuel Motor").push(catagory_fuel_motor);
@@ -45,7 +51,7 @@ public class CommonConfig {
 		}
 	@SubscribeEvent
 	public static void onLoad(ModConfigEvent.Loading event) {
-		loadConfig(CommonConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("create_fuel_motor-common.toml"));
+		loadConfig(CommonConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("Create Fuel Motor/create_fuel_motor-common.toml"));
 	}
 	public static void loadConfig(ModConfigSpec spec, java.nio.file.Path path) {
 		final CommentedFileConfig configData = CommentedFileConfig.builder(path)
