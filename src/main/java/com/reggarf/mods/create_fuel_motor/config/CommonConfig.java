@@ -10,6 +10,8 @@ public class CommonConfig {
 	public static final String catagory_fuel_motor = "fuel_motor";
 	public static ForgeConfigSpec.IntValue fuel_motor_rpm_range;
 	public static ForgeConfigSpec.BooleanValue audio_Enabled;
+	public static ForgeConfigSpec.BooleanValue data_Enabled;
+	public static ForgeConfigSpec.BooleanValue message_Enabled;
 	public static ForgeConfigSpec.DoubleValue fuel_motor_pickup_range;
 
 	private static final ForgeConfigSpec.Builder builder= new ForgeConfigSpec.Builder();
@@ -21,8 +23,12 @@ public class CommonConfig {
 					.comment(" as the config isnt synced between Clients and Server.");
 
 			builder.comment("General Settings").push(catagory_general);
-			audio_Enabled = builder.comment("If audio should be enabled or not.")
-					.define("audio_enabled", true);
+		    audio_Enabled = builder.comment("If audio should be enabled or not.")
+				.define("audio_enabled", true);
+		    data_Enabled = builder.comment("data recipe loading should be enabled or not.")
+				.define("data_enabled", true);
+		    message_Enabled = builder.comment("If Message should be enabled or not.")
+				.define("message_enabled", true);
 			builder.pop();
 
 			builder.comment("Fuel Motor").push(catagory_fuel_motor);

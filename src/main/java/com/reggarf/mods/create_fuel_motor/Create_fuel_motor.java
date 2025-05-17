@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
-import com.reggarf.mods.create_fuel_motor.config.DataConfig;
 import com.reggarf.mods.create_fuel_motor.datapack.DataLoaderRepositorySource;
+import com.reggarf.mods.create_fuel_motor.datapack.JoinDataName;
 import com.reggarf.mods.create_fuel_motor.datapack.RepoType;
 import com.reggarf.mods.create_fuel_motor.registry.*;
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -43,7 +43,6 @@ public class Create_fuel_motor {
     public static final CreateRegistrate BASE_REGISTRATE = CreateRegistrate.create(MOD_ID);
     public static final Logger LOG = LogManager.getLogger(MOD_ID);
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
-    public static DataConfig config;
     public static Path configDir;
 
     // Creative tab
@@ -94,21 +93,16 @@ public class Create_fuel_motor {
 
         // Register Forge event handlers
         forgeEventBus.register(CFMMHandler.class);
+        forgeEventBus.register(JoinDataName.class);
 
         configDir = FMLPaths.CONFIGDIR.get().resolve("Create Fuel Motor");
-        config = DataConfig.load(configDir);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::PackRepositories);
 
     }
     private void PackRepositories(AddPackFindersEvent event) {
 
         switch (event.getPackType()) {
-
-            case SERVER_DATA -> {
-
-                event.addRepositorySource(new DataLoaderRepositorySource(RepoType.DATA, config, config.dataPacks,configDir));
-            }
-
+            case SERVER_DATA -> {event.addRepositorySource(new DataLoaderRepositorySource(RepoType.DATA,configDir));}
             default -> Create_fuel_motor.LOG.warn("Encountered unknown pack type {}. Nothing will be loaded for this type.", event.getPackType().name());
         }
     }

@@ -1,7 +1,7 @@
 package com.reggarf.mods.create_fuel_motor.datapack;
 
 import com.reggarf.mods.create_fuel_motor.Create_fuel_motor;
-import com.reggarf.mods.create_fuel_motor.config.DataConfig;
+import com.reggarf.mods.create_fuel_motor.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.FilePackResources;
@@ -19,30 +19,19 @@ public class DataLoaderRepositorySource implements RepositorySource {
 
     private final RepoType type;
     private final List<File> directories;
-    private final DataConfig.PackConfig config;
     private final PackSource sourceInfo;
 
-    public DataLoaderRepositorySource(RepoType type, DataConfig globalConfig, DataConfig.PackConfig config, Path configDir) {
+    public DataLoaderRepositorySource(RepoType type, Path configDir) {
         this.type = type;
-        this.config = config;
         this.sourceInfo = PackSource.create(
-               // name -> globalConfig.displaySourceName
-                name -> true
-                        ? Component.translatable("pack.nameAndSource", name, Component.translatable("pack.source.openloader")).withStyle(ChatFormatting.GREEN)
-                        : name, true);
+                name -> Component.translatable("pack.nameAndSource", name,
+                        Component.translatable("pack.source.dataloader")).withStyle(ChatFormatting.GREEN), true);
 
-        //this.directories = List.of(configDir.resolve(type.getPath()).toFile());
-        Path gameDir = net.minecraftforge.fml.loading.FMLPaths.GAMEDIR.get(); // Minecraft root directory
+
+        Path gameDir = net.minecraftforge.fml.loading.FMLPaths.GAMEDIR.get();
         Path customFolder = gameDir.resolve("create_fuel_motor").resolve(type.getPath());
         this.directories = List.of(customFolder.toFile());
 
-//        directories.forEach(dir -> {
-//            if (!dir.exists() && dir.mkdirs()) {
-//                Create_fuel_motor.LOG.info("Created {} folder at {}", type.displayName, dir);
-//            } else if (!dir.isDirectory()) {
-//                throw new IllegalStateException("Invalid " + type.displayName + " folder: " + dir);
-//            }
-//        });
         directories.forEach(dir -> {
             if (!dir.exists() && dir.mkdirs()) {
                 Create_fuel_motor.LOG.info("Created {} folder at {}", type.displayName, dir);
@@ -101,7 +90,7 @@ public class DataLoaderRepositorySource implements RepositorySource {
 
     @Override
     public void loadPacks(Consumer<Pack> consumer) {
-        if (!config.enabled) {
+        if (!CommonConfig.data_Enabled.get()) {
             Create_fuel_motor.LOG.info("Skipping {}. Disabled by config.", type.displayName);
             return;
         }
