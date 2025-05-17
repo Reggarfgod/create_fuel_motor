@@ -34,7 +34,7 @@ public class DataLoaderRepositorySource implements RepositorySource {
 
         this.sourceInfo = PackSource.create(
                 name -> Component.translatable("pack.nameAndSource", name,
-                        Component.translatable("pack.source.openloader")).withStyle(ChatFormatting.GREEN), true);
+                        Component.translatable("pack.source.dataloader")).withStyle(ChatFormatting.GREEN), true);
 
         Path gameDir = FMLPaths.GAMEDIR.get();
         Path customFolder = gameDir.resolve("create_fuel_motor").resolve(type.getPath());
