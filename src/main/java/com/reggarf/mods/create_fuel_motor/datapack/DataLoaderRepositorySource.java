@@ -47,43 +47,125 @@ public class DataLoaderRepositorySource implements RepositorySource {
                 throw new IllegalStateException("Invalid " + type.displayName + " folder: " + dir);
             }
 
-            // Copy example zip
-            File exampleFile = new File(dir, "example_data.zip");
-            if (!exampleFile.exists()) {
-                try (InputStream in = getClass().getClassLoader().getResourceAsStream("example_data.zip")) {
-                    if (in != null) {
-                        Files.copy(in, exampleFile.toPath());
-                        Create_fuel_motor.LOG.info("Copied example_data.zip to {}", exampleFile.getAbsolutePath());
+//            // Copy example zip
+//            File exampleFile = new File(dir, "example_data.zip");
+//            if (!exampleFile.exists()) {
+//                try (InputStream in = getClass().getClassLoader().getResourceAsStream("example_data.zip")) {
+//                    if (in != null) {
+//                        Files.copy(in, exampleFile.toPath());
+//                        Create_fuel_motor.LOG.info("Copied example_data.zip to {}", exampleFile.getAbsolutePath());
+//                    } else {
+//                        Create_fuel_motor.LOG.warn("example_data.zip not found in resources!");
+//                    }
+//                } catch (Exception e) {
+//                    Create_fuel_motor.LOG.error("Failed to copy example_data.zip", e);
+//                }
+//            }
+
+            // === Copy example_data folder and its contents if it doesn't exist ===
+            File targetFolder = new File(dir, "example_data");
+            if (!targetFolder.exists()) {
+                try {
+                    var url = getClass().getClassLoader().getResource("example_data");
+                    if (url == null) {
+                        Create_fuel_motor.LOG.error("example_data folder not found in resources!");
+                    } else if (url.getProtocol().equals("jar")) {
+                        // From inside a JAR
+                        String pathInJar = "example_data/";
+                        String jarPath = url.getPath().substring(5, url.getPath().indexOf("!"));
+                        try (java.util.jar.JarFile jar = new java.util.jar.JarFile(jarPath)) {
+                            java.util.Enumeration<java.util.jar.JarEntry> entries = jar.entries();
+                            while (entries.hasMoreElements()) {
+                                java.util.jar.JarEntry entry = entries.nextElement();
+                                String name = entry.getName();
+                                if (name.startsWith(pathInJar)) {
+                                    String relativePath = name.substring(pathInJar.length());
+                                    File outFile = new File(targetFolder, relativePath);
+                                    if (entry.isDirectory()) {
+                                        outFile.mkdirs();
+                                    } else {
+                                        outFile.getParentFile().mkdirs();
+                                        try (var in = jar.getInputStream(entry)) {
+                                            java.nio.file.Files.copy(in, outFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                                        }
+                                    }
+                                }
+                            }
+                            Create_fuel_motor.LOG.info("Copied example_data folder to {}", targetFolder.getAbsolutePath());
+                        }
                     } else {
-                        Create_fuel_motor.LOG.warn("example_data.zip not found in resources!");
+                        // From filesystem (e.g. in dev environment)
+                        java.nio.file.Path sourcePath = java.nio.file.Paths.get(url.toURI());
+                        java.nio.file.Files.walk(sourcePath).forEach(source -> {
+                            try {
+                                java.nio.file.Path dest = java.nio.file.Paths.get(targetFolder.getAbsolutePath(), sourcePath.relativize(source).toString());
+                                if (java.nio.file.Files.isDirectory(source)) {
+                                    java.nio.file.Files.createDirectories(dest);
+                                } else {
+                                    java.nio.file.Files.copy(source, dest, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                                }
+                            } catch (Exception e) {
+                                Create_fuel_motor.LOG.error("Failed copying file from example_data: {}", source, e);
+                            }
+                        });
+                        Create_fuel_motor.LOG.info("Copied example_data folder to {}", targetFolder.getAbsolutePath());
                     }
                 } catch (Exception e) {
-                    Create_fuel_motor.LOG.error("Failed to copy example_data.zip", e);
+                    Create_fuel_motor.LOG.error("Failed to copy example_data folder", e);
                 }
             }
 
-            // Create README.txt
+
+            // === Create README.txt with instructions ===
             File readme = new File(dir, "README.txt");
             if (!readme.exists()) {
                 try {
                     String content = """
-                This folder is used by the Create Fuel Motor mod to load custom %s packs.
-
-                📦 You can use the provided 'example_data.zip' file as a reference to create your own custom recipes.
-
-                ✅ How to use:
-                - Extract or place your own folder or .zip/.jar file here.
-                - Ensure your pack contains a valid 'pack.mcmeta' file.
-                - Supported formats: folders, .zip, .jar.
-
-                ⚠️ Do NOT delete the 'example_data.zip' file.
-                ➤ Create your own data by taking help from the contents of 'example_data.zip'.
-
-                For recipe structure and format examples, refer to the contents inside 'example_data.zip'.
-
-                Mod by Reggarf.
+                         
+                                                                    This folder is used by the **Create Fuel Motor** mod to load custom `%s` data, such as motor fuel recipes. These data  allow you to extend and customize the mod's behavior without modifying its core files.
+                            
+                                                                    ================================================================================
+                            
+                                                                    📦 You can use the provided `example_data` folder as a reference to create your own custom data . It contains working examples of valid recipe formats and pack structures.
+                            
+                                                                    ================================================================================
+                            
+                                                                    ✅ How to Use:
+                            
+                                                                    1. **Create Your Own Data**
+                            
+                                                                       * Prepare a data  folder that includes your custom motor fuel recipes.
+                                                                       * Follow the same folder and file structure as shown in the `example_data` folder.
+                                                                       * Make sure to include a valid `pack.mcmeta` file at the root of your data. Without it, the game will not recognize your pack.
+                            
+                                                                    2. **Supported Formats**
+                            
+                                                                       * Raw folders (uncompressed)
+                                                                       * Compressed `.zip` files
+                                                                       * `.jar` files (structured like a data pack)
+                            
+                                                                    3. **Installation**
+                            
+                                                                       * Place your custom data  (folder, .zip, or .jar) inside this directory. The mod will automatically detect and load it when Minecraft starts or when data is reloaded.
+                            
+                                                                    ================================================================================
+                            
+                                                                    ⚠️ Important Notes:
+                            
+                                                                    * **Do NOT delete** the `example_data` folder. It is provided as a reference and fallback. Keeping it ensures that the mod always has a working example to fall back on.
+                                                                    * Always validate your custom data packs before use to avoid crashes or loading errors.
+                                                                    * If something goes wrong, double-check your file structure, JSON formatting, and the presence of a valid `pack.mcmeta` file.
+                            
+                                                                    ================================================================================
+                            
+                                                                    For more information on recipe structure and expected data formats, refer to the files inside the `example_data` folder. These examples demonstrate the correct way to define custom motor fuel recipes for the mod.
+                            
+                                                                    ================================================================================
+                            
+                                                                    🛠️ Mod developed by Reggarf
+                                  
                 """.formatted(type.displayName.toLowerCase());
-                    Files.writeString(readme.toPath(), content);
+                    java.nio.file.Files.writeString(readme.toPath(), content);
                     Create_fuel_motor.LOG.info("Generated README.txt at {}", readme.getAbsolutePath());
                 } catch (Exception e) {
                     Create_fuel_motor.LOG.error("Failed to generate README.txt", e);

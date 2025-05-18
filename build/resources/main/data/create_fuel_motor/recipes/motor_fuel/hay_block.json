@@ -1,0 +1,8 @@
+{
+  "type": "create_fuel_motor:motor_fuel",
+  "burn_time": 100,
+  "ingredient": {
+    "item": "minecraft:hay_block"
+  },
+  "stress": 120.0
+}

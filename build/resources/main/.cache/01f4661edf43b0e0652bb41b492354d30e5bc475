@@ -1,0 +1,8 @@
+// 1.20.1	2025-04-15T14:32:04.9893556	Registrate Provider for create_fuel_motor [Recipes, Advancements, Loot Tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+b8d015f5fc794928ce738f6ecc84204e49e76b09 assets/create_fuel_motor/blockstates/fuel_motor.json
+84efd03be47220952b943b5891ea27cebda66c13 assets/create_fuel_motor/lang/en_ud.json
+123983ef456bd60d3d7ff5e6c5dca8909d012bd0 assets/create_fuel_motor/lang/en_us.json
+e3f59b2d04bf8535185bd43fc8f815d2cddced97 assets/create_fuel_motor/models/item/fuel_motor.json
+fdd3d643410ff44296ad3ea24df81bebee303286 data/create/tags/blocks/safe_nbt.json
+6c17eb8445ff56b81b201bc902fe81426754a0df data/create_fuel_motor/loot_tables/blocks/fuel_motor.json
+fdd3d643410ff44296ad3ea24df81bebee303286 data/minecraft/tags/blocks/mineable/pickaxe.json
